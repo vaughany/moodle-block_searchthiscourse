@@ -20,19 +20,23 @@
  * SearchThisCourse searches through all of a course's resources for
  * specific keywords.
  *
- * @package    block_searchthiscourse
+ * @package    block
+ * @subpackage searchthiscourse
  * @copyright  2012 Paul Vaughan, paulvaughan@southdevon.ac.uk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 class block_searchthiscourse extends block_base {
 
-    function init() {
+        function init() {
         $this->title = get_string('pluginname', 'block_searchthiscourse');
     }
 
     function get_content() {
+
         global $CFG, $OUTPUT;
+
+        include_once('lib.php');
 
         if($this->content !== NULL) {
             return $this->content;
@@ -61,6 +65,17 @@ class block_searchthiscourse extends block_base {
         //$this->content->text .= '<a href="'.$CFG->wwwroot.'/blocks/searchthiscourse/search.php?id='.$this->page->course->id.'">'.$advancedsearch.'</a>';
         //$this->content->text .= $OUTPUT->help_icon('search');
         $this->content->text .= '</fieldset></form></div>';
+
+/*
+        $mform = new block_searchthiscourse_form(new moodle_url('/blocks/searchthiscourse/'));
+        //$mform->set_data((object) array('path' => $path));
+        if ($data = $mform->get_data()) {
+            //redirect(new moodle_url('/blocks/searchthiscourse/', array('path' => $data->path)));
+            redirect(new moodle_url('/blocks/searchthiscourse/'));
+        }
+        //$this->content->text .= $mform;
+        $this->content->text .= $mform->display();
+*/
 
         return $this->content;
     }
