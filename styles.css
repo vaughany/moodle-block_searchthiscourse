@@ -1,0 +1,13 @@
+.block_searchthiscourse .searchform {
+    text-align: center;
+}
+.block_searchthiscourse .searchform img {
+    vertical-align: middle;
+}
+.block_searchthiscourse .searchform img.resize {
+    width: 1em;
+    height: 1.1em;
+}
+.block_searchthiscourse .invisiblefieldset {
+    display: block;
+}
