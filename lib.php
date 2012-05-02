@@ -58,12 +58,14 @@ function clean_search_terms($words, $len=2) {
 function display_result_links($res, $title) {
     global $OUTPUT;
 
+    $listtype = (count($res) > 1) ? 'ol' : 'ul';
+
     echo $OUTPUT->box_start('generalbox');
-    echo "<p>Found the following $title:</p>\n<ol>\n";
+    echo "<p>Found the following $title:</p>\n<$listtype>\n";
     foreach ($res as $item) {
         echo "<li>$item</li>\n";
     }
-    echo "</ol>\n".$OUTPUT->box_end();
+    echo "</$listtype>\n".$OUTPUT->box_end();
 }
 
 /*
