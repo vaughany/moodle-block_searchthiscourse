@@ -145,13 +145,13 @@ function search_forum_posts($search, $cid) {
  * @param int $cid          Course ID.
  * @returns array
  */
-function search_forum_titles($search, $cid) {
+function search_labels($search, $cid) {
     global $CFG, $DB;
     $res = $DB->get_records_select('label', "course = '$cid' AND name LIKE '%$search%'", array('id, name'));
     $ret = array();
     foreach ($res as $row) {
         //$ret[] = html_writer::link(new moodle_url('/mod/forum/view.php', array('f' => $row->id)), $row->name);
-        $ret[] = "Yes, it's on a lebel on this course. Somewhere."
+        $ret[] = "Yes, it's on a label on this course. Somewhere.";
     }
     return $ret;
 }
