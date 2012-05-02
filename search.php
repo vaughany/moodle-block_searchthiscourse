@@ -31,6 +31,10 @@ require_once(dirname(__FILE__).'/lib.php');
 $id     = required_param('id', PARAM_INT);                          // course id
 $search = trim(required_param('search', PARAM_NOTAGS));             // search string
 
+if (empty($search)) {
+    redirect(new moodle_url('/course/view.php', array('id' => $id)));
+}
+
 $PAGE->set_pagelayout('standard');
 $PAGE->set_url($FULLME);
 
@@ -43,8 +47,6 @@ require_course_login($course);
 add_to_log($course->id, 'searchthiscourse', 'search', 'search.php?id='.$course->id.'&amp;search='.urlencode($search), $search);
 
 $search = clean_search_terms($search);
-
-
 
 // lots of strings we prolly don't need
 //$strforums = get_string("modulenameplural", "forum");
@@ -65,44 +67,44 @@ $PAGE->set_title($strsearchresults);
 $PAGE->set_heading($course->fullname);
 
 
-// here goes
-$res = search_forum_posts($search, $course->id);
+echo $OUTPUT->header();
+//echo $OUTPUT->heading(get_string('nopostscontaining', 'forum', $search));
+echo $OUTPUT->heading('SearchThisCourse Results');
+
+// Forums. /////////////////////////////////////////////////////////////////////////////////////////
+
+// Forum titles.
+$res = search_forum_titles($search, $course->id);
 if ($res) {
-
-    print_r($res);
-
-    //echo $OUTPUT->box_start('generalbox', 'stc_forumposts');
-    //echo $build;
-    //echo $OUTPUT->box_end();
-
+    display_result_links($res, 'forum titles');
+} else {
+    display_no_result('forum titles');
 }
 
+// Forum discussions.
+$res = search_forum_discussions($search, $course->id);
+if ($res) {
+    display_result_links($res, 'forum discussions');
+} else {
+    display_no_result('forum discussions');
+}
 
+// Forum posts.
+$res = search_forum_posts($search, $course->id);
+if ($res) {
+    display_result_links($res, 'forum posts');
+} else {
+    display_no_result('forum posts');
+}
 
+// Labels //////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('nopostscontaining', 'forum', $search));
+// Labels.
+$res = search_labels($search, $course->id);
+if ($res) {
+    display_result_links($res, 'labes');
+} else {
+    display_no_result('labels');
+}
 
 echo $OUTPUT->footer();
