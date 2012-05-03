@@ -27,6 +27,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+define('HIDDEN', 'class="dimmed_text" ' );
+
 /**
  * This function takes each word out of the search string, makes sure they are at least
  * two characters long and returns an array containing every good word.
@@ -68,6 +70,28 @@ function display_result_links($res, $title) {
     echo "</$listtype>\n".$OUTPUT->box_end();
 }
 
+
+/**
+ * Check the plugin is visible.
+ * @param string $name      Name of block or module (will take either).
+ * @return true or false
+ */
+function check_plugin_visible($name) {
+    global $DB;
+    $module = $DB->get_record('modules', array('name' => $name), 'id, visible');
+    if ($module) {
+        return ($module->visible) ? true : false;
+    } else {
+        $block = $DB->get_record('block', array('name' => $name), 'id, visible');
+        if ($block) {
+            return ($block->visible) ? true : false;
+        } else {
+            return false;
+        }
+    }
+}
+
+
 /*
  * Regular use function for displaying the lack of search results.
  * @param string $title     Text snippet of the searched area.
@@ -86,6 +110,12 @@ function display_no_result($title) {
  */
 function search_forum_titles($search, $cid) {
     global $CFG, $DB;
+
+    // Forums cannot be hidden globally, so little point checking!
+    //if (!check_plugin_visible('forum')) {
+    //    return false;
+    //}
+
     $res = $DB->get_records_select('forum', "course = '$cid' AND intro LIKE '%$search%'", array('id, intro'));
     $ret = array();
     foreach ($res as $row) {
@@ -104,10 +134,16 @@ function search_forum_titles($search, $cid) {
  */
 function search_forum_discussions($search, $cid) {
     global $CFG, $DB;
+
     $res = $DB->get_records_select('forum_discussions', "course = '$cid' AND name LIKE '%$search%'", array('id, name'));
+
     $ret = array();
     foreach ($res as $row) {
-        $ret[] = html_writer::link(new moodle_url('/mod/forum/discuss.php', array('d' => $row->id)), $row->name);
+        if (instance_is_visible('forum', $row)) {
+            $ret[] = html_writer::link(new moodle_url('/mod/forum/discuss.php', array('d' => $row->id)), $row->name);
+        } else {
+            $ret[] = html_writer::link(new moodle_url('/mod/forum/discuss.php', array('d' => $row->id)), $row->name, array('class' => 'dimmed_text'));
+        }
 
     }
     return $ret;
@@ -123,19 +159,27 @@ function search_forum_discussions($search, $cid) {
 function search_forum_posts($search, $cid) {
     global $CFG, $DB;
 
-    $sql = "SELECT ".$CFG->prefix."forum_posts.id, ".$CFG->prefix."forum_posts.discussion, subject
-            FROM ".$CFG->prefix."forum_posts, ".$CFG->prefix."forum_discussions
+    $sql = "SELECT ".$CFG->prefix."forum_posts.id AS pid, ".$CFG->prefix."forum.id,
+                ".$CFG->prefix."forum_posts.discussion, subject,
+                ".$CFG->prefix."forum_discussions.course
+            FROM ".$CFG->prefix."forum_posts, ".$CFG->prefix."forum_discussions, ".$CFG->prefix."forum
             WHERE ".$CFG->prefix."forum_posts.discussion = ".$CFG->prefix."forum_discussions.id
+            AND ".$CFG->prefix."forum_discussions.forum = ".$CFG->prefix."forum.id
             AND ".$CFG->prefix."forum_discussions.course = '$cid'
             AND (".$CFG->prefix."forum_posts.subject LIKE '%$search%' OR ".$CFG->prefix."forum_posts.message LIKE '%$search%');";
-            //AND ".$CFG->prefix."forum_posts.message LIKE '%$search%';";
     $res = $DB->get_records_sql($sql);
 
     $ret = array();
     foreach ($res as $row) {
-        $ret[] = '<a href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$row->discussion.'#p'.$row->id.'">'.$row->subject."</a>\n";
-        //$ret[] = html_writer::link(new moodle_url('/mod/forum/discuss.php', array('d' => $row->discussion, '#p' => $row->id)), $row->subject);
-        // tried using html_writer::link here but it can't handle the # on the end.
+
+        if (instance_is_visible('forum', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$row->discussion.'#p'.$row->pid.'">'.$row->subject."</a>\n";
+        } else {
+            $ret[] = '<a '.HIDDEN.'href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$row->discussion.'#p'.$row->pid.'">'.$row->subject."</a>\n";
+            //$ret[] = html_writer::link(new moodle_url('/mod/forum/discuss.php', array('d' => $row->discussion, '#p' => $row->id)), $row->subject);
+            // tried using html_writer::link here but it can't handle the # on the end.
+        }
+
     }
     return $ret;
 }
@@ -148,15 +192,41 @@ function search_forum_posts($search, $cid) {
  * @returns array
  */
 function search_labels($search, $cid) {
-    global $CFG, $DB;
-    $res = $DB->get_records_select('label', "course = '$cid' AND name LIKE '%$search%'", array('id, name'));
+    global $CFG, $DB, $COURSE;
+
+    if (!check_plugin_visible('label')) {
+        return false;
+    }
+
+    //$res = $DB->get_records_select('label', "course = '$cid' AND name LIKE '%$search%'", array('id, name'));
+
+    $sql = "SELECT ".$CFG->prefix."label.id, ".$CFG->prefix."label.name, ".$CFG->prefix."course_modules.section, ".$CFG->prefix."course_modules.course
+            FROM ".$CFG->prefix."label, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."label.course = ".$CFG->prefix."course_modules.course
+            AND ".$CFG->prefix."modules.name = 'label'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."label.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
     $ret = array();
     foreach ($res as $row) {
-        //$ret[] = html_writer::link(new moodle_url('/mod/forum/view.php', array('f' => $row->id)), $row->name);
-        $ret[] = "Yes, it's on a label on this course. Somewhere.";
+
+        // Check each instance's visibility. Use only if visible.
+        // Or, have results returned for teachers showing hidden elements, much like the course proper.
+        if (instance_is_visible('label', $row)) {
+            $ret[] = 'Search term found in a label in <a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.$row->section.'">section '.$row->section."</a>\n";
+        } else {
+            $ret[] = '<a '.HIDDEN.'href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.$row->section.'">Search term found in a <em>hidden</em> label in section '.$row->section."</a>\n";
+        }
+
     }
     return $ret;
 }
+
+
+
 
 require_once($CFG->libdir . '/formslib.php');
 /**
