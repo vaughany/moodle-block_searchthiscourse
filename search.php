@@ -102,7 +102,7 @@ if ($res) {
 // Labels.
 $res = search_labels($search, $course->id);
 if ($res) {
-    display_result_links($res, 'labes');
+    display_result_links($res, 'labels');
 } else {
     display_no_result('labels');
 }
