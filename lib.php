@@ -119,8 +119,8 @@ function search_forum_titles($search, $cid) {
     $res = $DB->get_records_select('forum', "course = '$cid' AND intro LIKE '%$search%'", array('id, intro'));
     $ret = array();
     foreach ($res as $row) {
+        // TODO: not checked for instance visibility
         $ret[] = html_writer::link(new moodle_url('/mod/forum/view.php', array('f' => $row->id)), $row->intro);
-
     }
     return $ret;
 }
@@ -184,6 +184,34 @@ function search_forum_posts($search, $cid) {
     return $ret;
 }
 
+
+
+/*
+ * Search forum titles for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_glossary_titles($search, $cid) {
+    global $CFG, $DB;
+
+    if (!check_plugin_visible('glossary')) {
+        return false;
+    }
+
+    $res = $DB->get_records_select('glossary', "course = '$cid' AND name LIKE '%$search%' OR intro LIKE '%$search%'", array('id, name'));
+    $ret = array();
+    foreach ($res as $row) {
+        // TODO: not checked for instance visibility
+        $ret[] = html_writer::link(new moodle_url('/mod/glossary/view.php', array('id' => $row->id)), $row->name);
+
+    }
+    return $ret;
+}
+
+
+
 /*
  * Search labels for the keyword
  *
@@ -212,6 +240,8 @@ function search_labels($search, $cid) {
 
     $ret = array();
     foreach ($res as $row) {
+
+        // TODO: sections appear to be wrong.
 
         // Check each instance's visibility. Use only if visible.
         // Or, have results returned for teachers showing hidden elements, much like the course proper.

@@ -50,7 +50,7 @@ $search = clean_search_terms($search);
 
 // lots of strings we prolly don't need
 //$strforums = get_string("modulenameplural", "forum");
-$strsearch = get_string('search', 'forum');
+//$strsearch = get_string('search', 'forum');
 $strsearchresults = get_string("searchresults", "forum");
 //$strpage = get_string("page");
 
@@ -60,7 +60,7 @@ $strsearchresults = get_string("searchresults", "forum");
 //$searchform = forum_search_form($course, $search);
 
 // nav
-$PAGE->navbar->add($strsearch, new moodle_url('/blocks/searchthiscourse/search.php', array('id' => $course->id)));
+$PAGE->navbar->add(get_string('pluginname', 'block_searchthiscourse'), new moodle_url('/blocks/searchthiscourse/search.php', array('id' => $course->id)));
 $PAGE->navbar->add(s($search, true));
 
 $PAGE->set_title($strsearchresults);
@@ -95,6 +95,16 @@ if ($res) {
     display_result_links($res, 'forum posts');
 } else {
     display_no_result('forum posts');
+}
+
+// Glossaries //////////////////////////////////////////////////////////////////////////////////////
+
+// Glossary titles.
+$res = search_glossary_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'glossaries');
+} else {
+    display_no_result('glossaries');
 }
 
 // Labels //////////////////////////////////////////////////////////////////////////////////////////
