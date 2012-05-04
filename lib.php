@@ -223,8 +223,10 @@ function search_glossary_entries($search, $cid) {
     }
 
     // TODO: This gets the user to the glossary, but not the specific entry
+    // TODO: Strip HTML from the returned fields.
 
-    $sql = "SELECT ".$CFG->prefix."glossary_entries.id, glossaryid, concept, ".$CFG->prefix."course_modules.id AS cmid, ".$CFG->prefix."glossary.course
+    $sql = "SELECT ".$CFG->prefix."glossary_entries.id, glossaryid, concept, ".$CFG->prefix."course_modules.id AS cmid,
+                ".$CFG->prefix."glossary.course, ".$CFG->prefix."glossary_entries.definition
             FROM ".$CFG->prefix."glossary_entries, ".$CFG->prefix."glossary, ".$CFG->prefix."modules, ".$CFG->prefix."course_modules
             WHERE ".$CFG->prefix."glossary_entries.glossaryid = ".$CFG->prefix."glossary.id
             AND ".$CFG->prefix."glossary.course = '".$cid."'
@@ -239,9 +241,9 @@ function search_glossary_entries($search, $cid) {
     foreach ($res as $row) {
 
         if (instance_is_visible('label', $row)) {
-            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept."</a>\n";
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept.'</a>: ('.$row->definition.")\n";
         } else {
-            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept."</a>\n";
+            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept.'</a>: ('.$row->definition.")\n";
         }
 
     }
