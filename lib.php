@@ -185,7 +185,7 @@ function search_forum_posts($search, $cid) {
 
 
 /*
- * Search forum titles for the keyword
+ * Search glossary titles for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
@@ -203,6 +203,46 @@ function search_glossary_titles($search, $cid) {
     foreach ($res as $row) {
         // TODO: not checked for instance visibility
         $ret[] = html_writer::link(new moodle_url('/mod/glossary/view.php', array('id' => $row->id)), $row->name);
+
+    }
+    return $ret;
+}
+
+/*
+ * Search glossary entries for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_glossary_entries($search, $cid) {
+    global $CFG, $DB, $COURSE;
+
+    if (!check_plugin_visible('glossary')) {
+        return false;
+    }
+
+    // TODO: This gets the user to the glossary, but not the specific entry
+
+    $sql = "SELECT ".$CFG->prefix."glossary_entries.id, glossaryid, concept, ".$CFG->prefix."course_modules.id AS cmid, ".$CFG->prefix."glossary.course
+            FROM ".$CFG->prefix."glossary_entries, ".$CFG->prefix."glossary, ".$CFG->prefix."modules, ".$CFG->prefix."course_modules
+            WHERE ".$CFG->prefix."glossary_entries.glossaryid = ".$CFG->prefix."glossary.id
+            AND ".$CFG->prefix."glossary.course = '".$cid."'
+            AND (concept like '%hello%' OR definition like '%hello%')
+            AND ".$CFG->prefix."modules.name = 'glossary'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."course_modules.course = ".$CFG->prefix."glossary.course;";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+
+        if (instance_is_visible('label', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept."</a>\n";
+        } else {
+            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept."</a>\n";
+        }
 
     }
     return $ret;

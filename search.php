@@ -108,6 +108,14 @@ if ($res) {
     display_no_result('glossaries');
 }
 
+// Glossary entries.
+$res = search_glossary_entries($search, $course->id);
+if ($res) {
+    display_result_links($res, 'glossary entries');
+} else {
+    display_no_result('glossary entries');
+}
+
 // Labels //////////////////////////////////////////////////////////////////////////////////////////
 
 // Labels.
