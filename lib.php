@@ -27,8 +27,6 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-define('HIDDEN', 'class="dimmed_text" ' );
-
 /**
  * This function takes each word out of the search string, makes sure they are at least
  * two characters long and returns an array containing every good word.
@@ -119,8 +117,11 @@ function search_forum_titles($search, $cid) {
     $res = $DB->get_records_select('forum', "course = '$cid' AND intro LIKE '%$search%'", array('id, intro'));
     $ret = array();
     foreach ($res as $row) {
-        // TODO: not checked for instance visibility
-        $ret[] = html_writer::link(new moodle_url('/mod/forum/view.php', array('f' => $row->id)), $row->intro);
+        if (instance_is_visible('forum', $row)) {
+            $ret[] = html_writer::link(new moodle_url('/mod/forum/view.php', array('f' => $row->id)), $row->intro);
+        } else {
+            $ret[] = html_writer::link(new moodle_url('/mod/forum/view.php', array('f' => $row->id)), $row->intro, array('class' => 'dimmed_text'));
+        }
     }
     return $ret;
 }
@@ -136,7 +137,6 @@ function search_forum_discussions($search, $cid) {
     global $CFG, $DB;
 
     $res = $DB->get_records_select('forum_discussions', "course = '$cid' AND name LIKE '%$search%'", array('id, name'));
-
     $ret = array();
     foreach ($res as $row) {
         if (instance_is_visible('forum', $row)) {
@@ -168,14 +168,12 @@ function search_forum_posts($search, $cid) {
             AND ".$CFG->prefix."forum_discussions.course = '$cid'
             AND (".$CFG->prefix."forum_posts.subject LIKE '%$search%' OR ".$CFG->prefix."forum_posts.message LIKE '%$search%');";
     $res = $DB->get_records_sql($sql);
-
     $ret = array();
     foreach ($res as $row) {
-
         if (instance_is_visible('forum', $row)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$row->discussion.'#p'.$row->pid.'">'.$row->subject."</a>\n";
         } else {
-            $ret[] = '<a '.HIDDEN.'href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$row->discussion.'#p'.$row->pid.'">'.$row->subject."</a>\n";
+            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$row->discussion.'#p'.$row->pid.'">'.$row->subject."</a>\n";
             //$ret[] = html_writer::link(new moodle_url('/mod/forum/discuss.php', array('d' => $row->discussion, '#p' => $row->id)), $row->subject);
             // tried using html_writer::link here but it can't handle the # on the end.
         }
@@ -244,7 +242,7 @@ function search_labels($search, $cid) {
         if (instance_is_visible('label', $row)) {
             $ret[] = 'Search term found in a label in <a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section-1).'">section '.($row->section-1)."</a>\n";
         } else {
-            $ret[] = '<a '.HIDDEN.'href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section-1).'">Search term found in a <em>hidden</em> label in section '.($row->section-1)."</a>\n";
+            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section-1).'">Search term found in a <em>hidden</em> label in section '.($row->section-1)."</a>\n";
         }
 
     }
