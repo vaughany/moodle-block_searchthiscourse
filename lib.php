@@ -226,8 +226,6 @@ function search_labels($search, $cid) {
         return false;
     }
 
-    //$res = $DB->get_records_select('label', "course = '$cid' AND name LIKE '%$search%'", array('id, name'));
-
     $sql = "SELECT ".$CFG->prefix."label.id, ".$CFG->prefix."label.name, ".$CFG->prefix."course_modules.section, ".$CFG->prefix."course_modules.course
             FROM ".$CFG->prefix."label, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."label.course = ".$CFG->prefix."course_modules.course
@@ -241,14 +239,12 @@ function search_labels($search, $cid) {
     $ret = array();
     foreach ($res as $row) {
 
-        // TODO: sections appear to be wrong.
-
         // Check each instance's visibility. Use only if visible.
         // Or, have results returned for teachers showing hidden elements, much like the course proper.
         if (instance_is_visible('label', $row)) {
-            $ret[] = 'Search term found in a label in <a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.$row->section.'">section '.$row->section."</a>\n";
+            $ret[] = 'Search term found in a label in <a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section-1).'">section '.($row->section-1)."</a>\n";
         } else {
-            $ret[] = '<a '.HIDDEN.'href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.$row->section.'">Search term found in a <em>hidden</em> label in section '.$row->section."</a>\n";
+            $ret[] = '<a '.HIDDEN.'href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section-1).'">Search term found in a <em>hidden</em> label in section '.($row->section-1)."</a>\n";
         }
 
     }
