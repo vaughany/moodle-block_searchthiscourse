@@ -55,13 +55,19 @@ function clean_search_terms($words, $len=2) {
  * @param object $res       Database result object.
  * @param string $title     Text snippet of the searched area.
  */
-function display_result_links($res, $title) {
-    global $OUTPUT;
+function display_result_links($res, $title, $module = null) {
+    global $CFG, $OUTPUT;
 
     $listtype = (count($res) > 1) ? 'ol' : 'ul';
 
+    if ($module) {
+        $img = '<img src="'.$CFG->wwwroot.'/theme/image.php?theme='.$CFG->theme.'&image=icon&component='.$module.'" alt="'.$module.'" title="'.$module.'" /> ';
+    } else {
+        $img = '';
+    }
+
     echo $OUTPUT->box_start('generalbox');
-    echo "<p>Found the following $title:</p>\n<$listtype>\n";
+    echo "<p>{$img}Found the following $title:</p>\n<$listtype>\n";
     foreach ($res as $item) {
         echo "<li>$item</li>\n";
     }
@@ -346,6 +352,12 @@ function search_checklist_titles($search, $cid) {
 
 
 
+
+
+
+
+
+
 require_once($CFG->libdir . '/formslib.php');
 /**
  * Settings form for the code checker.
@@ -370,3 +382,7 @@ class block_searchthiscourse_form extends moodleform {
         $mform->addElement('submit', 'submitbutton', get_string('pluginname', 'block_searchthiscourse').'!');
     }
 }
+
+
+
+
