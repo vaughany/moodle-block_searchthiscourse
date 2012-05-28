@@ -201,9 +201,11 @@ function search_glossary_titles($search, $cid) {
     $res = $DB->get_records_select('glossary', "course = '$cid' AND name LIKE '%$search%' OR intro LIKE '%$search%'", array('id, name'));
     $ret = array();
     foreach ($res as $row) {
-        // TODO: not checked for instance visibility
-        $ret[] = html_writer::link(new moodle_url('/mod/glossary/view.php', array('id' => $row->id)), $row->name);
-
+        if (instance_is_visible('forum', $row)) {
+            $ret[] = html_writer::link(new moodle_url('/mod/glossary/view.php', array('id' => $row->id)), $row->name);
+        } else {
+            $ret[] = html_writer::link(new moodle_url('/mod/glossary/view.php', array('id' => $row->id)), $row->name, array('class' => 'dimmed_text'));
+        }
     }
     return $ret;
 }
@@ -241,9 +243,9 @@ function search_glossary_entries($search, $cid) {
     foreach ($res as $row) {
 
         if (instance_is_visible('label', $row)) {
-            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept.'</a>: ('.$row->definition.")\n";
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept.'</a>: ('.strip_tags($row->definition).")\n";
         } else {
-            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept.'</a>: ('.$row->definition.")\n";
+            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept.'</a>: ('.strip_tags($row->definition).")\n";
         }
 
     }
@@ -260,7 +262,7 @@ function search_glossary_entries($search, $cid) {
  * @returns array
  */
 function search_labels($search, $cid) {
-    global $CFG, $DB, $COURSE;
+    global $CFG, $DB;
 
     if (!check_plugin_visible('label')) {
         return false;
@@ -290,6 +292,56 @@ function search_labels($search, $cid) {
     }
     return $ret;
 }
+
+
+
+/*
+ * Search checklist titles for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_checklist_titles($search, $cid) {
+    global $CFG, $DB;
+
+    if (!check_plugin_visible('checklist')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."checklist.id, ".$CFG->prefix."checklist.name, ".$CFG->prefix."checklist.intro, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."checklist, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."checklist.course = ".$CFG->prefix."course_modules.course
+            AND ".$CFG->prefix."modules.name = 'checklist'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."checklist.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('checklist', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/checklist/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+        } else {
+            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/checklist/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+        }
+    }
+    return $ret;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

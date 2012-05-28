@@ -25,6 +25,38 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/*
+Moodle activities in decending order of use
+File            42544
+URL             8599
+Label           6990
+Page            2192
+Assignment      2009
+Folder          1323
+SCORM package   958
+Forum           932
+Feedback        641
+Quiz            579
+IMS content package 419
+Book            194
+Choice          182
+Slideshow       153
+HotPot          90
+Glossary        86
+Scheduler       57
+Wiki            36
+Lesson          35
+Chat            18
+OU wiki         15
+Certificate     14
+Database        12
+Workshop        4
+OU blog         3
+Journal         1
+Survey          1
+External Tool   0
+*/
+
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 
@@ -125,5 +157,64 @@ if ($res) {
 } else {
     display_no_result('labels');
 }
+
+// Checklists. /////////////////////////////////////////////////////////////////////////////////////
+
+// Checklist titles.
+$res = search_checklist_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'checklist titles');
+} else {
+    display_no_result('checklist titles');
+}
+
+// Checklist items.
+/*$res = search_checklist_items($search, $course->id);
+if ($res) {
+    display_result_links($res, 'checklist items');
+} else {
+    display_no_result('checklist items');
+}*/
+
+// Files. //////////////////////////////////////////////////////////////////////////////////////////
+
+// File names.
+//$res = search_file_titles($search, $course->id);
+//if ($res) {
+//    display_result_links($res, 'file titles');
+//} else {
+//    display_no_result('file titles');
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//$sections = get_all_sections($id);
+//print_object($sections);
+
+
+
+
+
+
+
+
+
+
+
 
 echo $OUTPUT->footer();
