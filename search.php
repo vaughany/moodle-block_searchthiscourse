@@ -174,12 +174,30 @@ if ($res) {
 // File names.
 //$res = search_file_titles($search, $course->id);
 //if ($res) {
-//    display_result_links($res, 'file titles');
+//    display_result_links($res, 'file titles', 'files');
 //} else {
 //    display_no_result('file titles');
 //}
 
+// URLs. ///////////////////////////////////////////////////////////////////////////////////////////
 
+// URL titles.
+$res = search_url_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'URL titles', 'url');
+} else {
+    display_no_result('URL titles');
+}
+
+// URLs.
+$res = search_urls($search, $course->id);
+if ($res) {
+    display_result_links($res, 'URLs', 'url');
+} else {
+    display_no_result('URLs');
+}
+
+// Pages. //////////////////////////////////////////////////////////////////////////////////////////
 
 
 
