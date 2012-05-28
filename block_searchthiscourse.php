@@ -83,7 +83,7 @@ class block_searchthiscourse extends block_base {
     function applicable_formats() {
         return array(
             'site' => true,
-            'course' => true
+            'course' => true,
         );
     }
 }
