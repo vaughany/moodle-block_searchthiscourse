@@ -230,7 +230,7 @@ function search_glossary_entries($search, $cid) {
             FROM ".$CFG->prefix."glossary_entries, ".$CFG->prefix."glossary, ".$CFG->prefix."modules, ".$CFG->prefix."course_modules
             WHERE ".$CFG->prefix."glossary_entries.glossaryid = ".$CFG->prefix."glossary.id
             AND ".$CFG->prefix."glossary.course = '".$cid."'
-            AND (concept like '%hello%' OR definition like '%hello%')
+            AND (concept like '%$search%' OR definition like '%$search%')
             AND ".$CFG->prefix."modules.name = 'glossary'
             AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
             AND ".$CFG->prefix."course_modules.course = ".$CFG->prefix."glossary.course;";
