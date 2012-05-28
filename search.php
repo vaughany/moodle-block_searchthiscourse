@@ -102,14 +102,15 @@ $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 //echo $OUTPUT->heading(get_string('nopostscontaining', 'forum', $search));
 echo $OUTPUT->heading('SearchThisCourse Results');
-echo 'Note that if any results are found in hidden resouces, they will <span class="dimmed_text">appear greyed out</span>, and are only visisble to those users with Teacher rights or better.';
+echo 'Note that if any results are found in hidden resouces, they will <span class="dimmed_text">appear greyed out</span>, and are only visible to those users with Teacher rights or better.';
 echo html_writer::tag('hr', null);
+
 // Forums. /////////////////////////////////////////////////////////////////////////////////////////
 
 // Forum titles.
 $res = search_forum_titles($search, $course->id);
 if ($res) {
-    display_result_links($res, 'forum titles');
+    display_result_links($res, 'forum titles', 'forum');
 } else {
     display_no_result('forum titles');
 }
@@ -117,7 +118,7 @@ if ($res) {
 // Forum discussions.
 $res = search_forum_discussions($search, $course->id);
 if ($res) {
-    display_result_links($res, 'forum discussions');
+    display_result_links($res, 'forum discussions', 'forum');
 } else {
     display_no_result('forum discussions');
 }
@@ -125,7 +126,7 @@ if ($res) {
 // Forum posts.
 $res = search_forum_posts($search, $course->id);
 if ($res) {
-    display_result_links($res, 'forum posts');
+    display_result_links($res, 'forum posts', 'forum');
 } else {
     display_no_result('forum posts');
 }
@@ -135,7 +136,7 @@ if ($res) {
 // Glossary titles.
 $res = search_glossary_titles($search, $course->id);
 if ($res) {
-    display_result_links($res, 'glossaries');
+    display_result_links($res, 'glossaries', 'glossary');
 } else {
     display_no_result('glossaries');
 }
@@ -143,7 +144,7 @@ if ($res) {
 // Glossary entries.
 $res = search_glossary_entries($search, $course->id);
 if ($res) {
-    display_result_links($res, 'glossary entries');
+    display_result_links($res, 'glossary entries', 'glossary');
 } else {
     display_no_result('glossary entries');
 }
@@ -163,18 +164,10 @@ if ($res) {
 // Checklist titles.
 $res = search_checklist_titles($search, $course->id);
 if ($res) {
-    display_result_links($res, 'checklist titles');
+    display_result_links($res, 'checklist titles', 'checklist');
 } else {
     display_no_result('checklist titles');
 }
-
-// Checklist items.
-/*$res = search_checklist_items($search, $course->id);
-if ($res) {
-    display_result_links($res, 'checklist items');
-} else {
-    display_no_result('checklist items');
-}*/
 
 // Files. //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -203,18 +196,14 @@ if ($res) {
 
 
 
+
+
+
+
+
+
 //$sections = get_all_sections($id);
 //print_object($sections);
-
-
-
-
-
-
-
-
-
-
-
+//print_object($CFG->theme);
 
 echo $OUTPUT->footer();
