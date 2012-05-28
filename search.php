@@ -70,7 +70,7 @@ $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 //echo $OUTPUT->heading(get_string('nopostscontaining', 'forum', $search));
 echo $OUTPUT->heading('SearchThisCourse Results');
-echo 'Note that if any results are found in hidden resouces, they will <span class="dimmed_text">appear greyed out</span>, and are only visisble to those users with Teacher rights of better.';
+echo 'Note that if any results are found in hidden resouces, they will <span class="dimmed_text">appear greyed out</span>, and are only visisble to those users with Teacher rights or better.';
 echo html_writer::tag('hr', null);
 // Forums. /////////////////////////////////////////////////////////////////////////////////////////
 
