@@ -28,13 +28,13 @@
 /*
 Moodle activities in decending order of use
 File            42544
-URL             8599
-Label           6990
-Page            2192
+URL             8599    :)
+Label           6990    :)
+Page            2192    :)
 Assignment      2009
 Folder          1323
 SCORM package   958
-Forum           932
+Forum           932     :)
 Feedback        641
 Quiz            579
 IMS content package 419
@@ -172,12 +172,12 @@ if ($res) {
 // Files. //////////////////////////////////////////////////////////////////////////////////////////
 
 // File names.
-//$res = search_file_titles($search, $course->id);
-//if ($res) {
-//    display_result_links($res, 'file titles', 'files');
-//} else {
-//    display_no_result('file titles');
-//}
+/*$res = search_filenames($search, $course->id);
+if ($res) {
+    display_result_links($res, 'file titles', 'files');
+} else {
+    display_no_result('file titles');
+}*/
 
 // URLs. ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -215,7 +215,23 @@ if ($res) {
     display_no_result('page content');
 }
 
+// Book. ///////////////////////////////////////////////////////////////////////////////////////////
 
+// Book titles.
+$res = search_book_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'book titles', 'book');
+} else {
+    display_no_result('book titles');
+}
+
+// Book content.
+$res = search_book_content($search, $course->id);
+if ($res) {
+    display_result_links($res, 'book content', 'book');
+} else {
+    display_no_result('book content');
+}
 
 
 

@@ -52,21 +52,22 @@ function clean_search_terms($words, $len=2) {
     return trim(implode(' ', $searchterms));
 }
 
+
 /**
  * This function shortens content to a more usable length.
  * @param string $content       String to trim
- * @returns                     string
+ * @returns string
  */
 function summarise_content($content) {
     global $summary_length;
     if (strlen($content) < $summary_length) {
-        return $content;
+        // Strip tags, get the slice of the string, trim the result, add dots.
+        return trim(strip_tags($content));
     } else {
         // Strip tags, get the slice of the string, trim the result, add dots.
         return trim(substr(strip_tags($content), 0, $summary_length)).'...';
     }
 }
-
 
 
 /*
@@ -257,7 +258,7 @@ function search_glossary_entries($search, $cid) {
             FROM ".$CFG->prefix."glossary_entries, ".$CFG->prefix."glossary, ".$CFG->prefix."modules, ".$CFG->prefix."course_modules
             WHERE ".$CFG->prefix."glossary_entries.glossaryid = ".$CFG->prefix."glossary.id
             AND ".$CFG->prefix."glossary.course = '".$cid."'
-            AND (concept like '%$search%' OR definition like '%$search%')
+            AND (concept LIKE '%$search%' OR definition LIKE '%$search%')
             AND ".$CFG->prefix."modules.name = 'glossary'
             AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
             AND ".$CFG->prefix."course_modules.course = ".$CFG->prefix."glossary.course;";
@@ -296,6 +297,7 @@ function search_labels($search, $cid) {
     $sql = "SELECT ".$CFG->prefix."label.id, ".$CFG->prefix."label.name, ".$CFG->prefix."course_modules.section, ".$CFG->prefix."course_modules.course
             FROM ".$CFG->prefix."label, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."label.course = ".$CFG->prefix."course_modules.course
+            AND (".$CFG->prefix."label.name LIKE '%$search%' OR intro LIKE '%$search%')
             AND ".$CFG->prefix."modules.name = 'label'
             AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
             AND ".$CFG->prefix."label.id = ".$CFG->prefix."course_modules.instance
@@ -338,6 +340,7 @@ function search_checklist_titles($search, $cid) {
                 ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
             FROM ".$CFG->prefix."checklist, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."checklist.course = ".$CFG->prefix."course_modules.course
+            AND (".$CFG->prefix."checklist.name LIKE '%$search%' OR intro LIKE '%$search%')
             AND ".$CFG->prefix."modules.name = 'checklist'
             AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
             AND ".$CFG->prefix."checklist.id = ".$CFG->prefix."course_modules.instance
@@ -375,6 +378,7 @@ function search_url_titles($search, $cid) {
                 ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
             FROM ".$CFG->prefix."url, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."url.course = ".$CFG->prefix."course_modules.course
+            AND (".$CFG->prefix."url.name LIKE '%$search%' OR intro LIKE '%$search%')
             AND ".$CFG->prefix."modules.name = 'url'
             AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
             AND ".$CFG->prefix."url.id = ".$CFG->prefix."course_modules.instance
@@ -411,6 +415,7 @@ function search_urls($search, $cid) {
                 ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
             FROM ".$CFG->prefix."url, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."url.course = ".$CFG->prefix."course_modules.course
+            AND externalurl LIKE '%$search%'
             AND ".$CFG->prefix."modules.name = 'url'
             AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
             AND ".$CFG->prefix."url.id = ".$CFG->prefix."course_modules.instance
@@ -428,7 +433,6 @@ function search_urls($search, $cid) {
     }
     return $ret;
 }
-
 
 
 /*
@@ -449,6 +453,7 @@ function search_page_titles($search, $cid) {
                 ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
             FROM ".$CFG->prefix."page, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."page.course = ".$CFG->prefix."course_modules.course
+            AND (".$CFG->prefix."page.name LIKE '%$search%' OR intro LIKE '%$search%')
             AND ".$CFG->prefix."modules.name = 'page'
             AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
             AND ".$CFG->prefix."page.id = ".$CFG->prefix."course_modules.instance
@@ -475,7 +480,7 @@ function search_page_titles($search, $cid) {
  * @returns array
  */
 function search_page_content($search, $cid) {
-    global $CFG, $DB, $summary_length;
+    global $CFG, $DB;
 
     if (!check_plugin_visible('page')) {
         return false;
@@ -485,6 +490,7 @@ function search_page_content($search, $cid) {
                 ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
             FROM ".$CFG->prefix."page, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."page.course = ".$CFG->prefix."course_modules.course
+            AND content LIKE '%$search%'
             AND ".$CFG->prefix."modules.name = 'page'
             AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
             AND ".$CFG->prefix."page.id = ".$CFG->prefix."course_modules.instance
@@ -508,7 +514,122 @@ function search_page_content($search, $cid) {
 }
 
 
+/*
+ * Search filenames for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+/*
+function search_filenames($search, $cid) {
+    global $CFG, $DB;
 
+    if (!check_plugin_visible('files')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."files.id, ".$CFG->prefix."files.filename, ".$CFG->prefix."files.userid, ".$CFG->prefix."files.filesize, ".$CFG->prefix."files.mimetype,
+                ".$CFG->prefix."files.author, ".$CFG->prefix."course_modules.section, ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."files, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."files.course = ".$CFG->prefix."course_modules.course
+            AND ".$CFG->prefix."modules.name = 'files'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."files.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('url', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: (<a href="'.$row->externalurl.'">'.$row->externalurl."</a>)\n";
+        } else {
+            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: (<a href="'.$row->externalurl.'">'.$row->externalurl."</a>)\n";
+        }
+    }
+    return $ret;
+}*/
+
+
+/*
+ * Search book titles for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_book_titles($search, $cid) {
+    global $CFG, $DB;
+
+    if (!check_plugin_visible('book')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."book.id, ".$CFG->prefix."book.name, ".$CFG->prefix."book.intro, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."book, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."book.course = ".$CFG->prefix."course_modules.course
+            AND (".$CFG->prefix."book.name LIKE '%$search%' OR intro LIKE '%$search%')
+            AND ".$CFG->prefix."modules.name = 'book'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."book.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('book', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+        } else {
+            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+        }
+    }
+    return $ret;
+}
+
+/*
+ * Search book content for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_book_content($search, $cid) {
+    global $CFG, $DB;
+
+    if (!check_plugin_visible('book')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."book_chapters.id, ".$CFG->prefix."book_chapters.title, ".$CFG->prefix."book_chapters.content, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."book, ".$CFG->prefix."book_chapters, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."book.course = ".$CFG->prefix."course_modules.course
+            AND ".$CFG->prefix."book_chapters.bookid = ".$CFG->prefix."book.id
+            AND (title LIKE '%$search%' OR content LIKE '%$search%')
+            AND ".$CFG->prefix."modules.name = 'book'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."book.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+
+        // Summarising the page's content.
+        $summary = summarise_content($row->content);
+
+        if (instance_is_visible('book', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'&chapterid='.$row->id.'"> '.$row->title.'</a>: ('.$summary.")\n";
+        } else {
+            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'&chapterid='.$row->id.'"> '.$row->title.'</a>: ('.$summary.")\n";
+        }
+    }
+    return $ret;
+}
 
 
 
@@ -550,7 +671,3 @@ class block_searchthiscourse_form extends moodleform {
         $mform->addElement('submit', 'submitbutton', get_string('pluginname', 'block_searchthiscourse').'!');
     }
 }
-
-
-
-
