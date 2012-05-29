@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 ## Purpose
 
-Being able to type 'cheese' (a keyword of your choice) and have it found whether it exists in a Label, Forum post or Book page is something we don't often need to do, but have had no way of doing. Until now.
+Being able to type 'cheese' (or any keyword of your choice) and search for it whether it exists in a Label, Forum post, Book page or any core Moodle activity is something we don't often need to do, but have had no way of doing. Until now.
 
 ## Installation
 
