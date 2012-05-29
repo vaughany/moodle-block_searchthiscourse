@@ -27,6 +27,9 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+// Some functions summarise the content they get from the database to this number of characters.
+$summary_length = 75;
+
 /**
  * This function takes each word out of the search string, makes sure they are at least
  * two characters long and returns an array containing every good word.
@@ -48,6 +51,22 @@ function clean_search_terms($words, $len=2) {
     }
     return trim(implode(' ', $searchterms));
 }
+
+/**
+ * This function shortens content to a more usable length.
+ * @param string $content       String to trim
+ * @returns                     string
+ */
+function summarise_content($content) {
+    global $summary_length;
+    if (strlen($content) < $summary_length) {
+        return $content;
+    } else {
+        // Strip tags, get the slice of the string, trim the result, add dots.
+        return trim(substr(strip_tags($content), 0, $summary_length)).'...';
+    }
+}
+
 
 
 /*
@@ -411,6 +430,82 @@ function search_urls($search, $cid) {
 }
 
 
+
+/*
+ * Search page titles for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_page_titles($search, $cid) {
+    global $CFG, $DB;
+
+    if (!check_plugin_visible('page')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."page.id, ".$CFG->prefix."page.name, ".$CFG->prefix."page.intro, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."page, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."page.course = ".$CFG->prefix."course_modules.course
+            AND ".$CFG->prefix."modules.name = 'page'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."page.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('page', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+        } else {
+            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+        }
+    }
+    return $ret;
+}
+
+/*
+ * Search page content for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_page_content($search, $cid) {
+    global $CFG, $DB, $summary_length;
+
+    if (!check_plugin_visible('page')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."page.id, ".$CFG->prefix."page.name, ".$CFG->prefix."page.intro, ".$CFG->prefix."page.content, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."page, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."page.course = ".$CFG->prefix."course_modules.course
+            AND ".$CFG->prefix."modules.name = 'page'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."page.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+
+        // Summarising the page's content.
+        $summary = summarise_content($row->content);
+
+        if (instance_is_visible('page', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.$summary.")\n";
+        } else {
+            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.$summary.")\n";
+        }
+    }
+    return $ret;
+}
 
 
 

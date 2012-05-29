@@ -199,8 +199,21 @@ if ($res) {
 
 // Pages. //////////////////////////////////////////////////////////////////////////////////////////
 
+// Page titles.
+$res = search_page_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'page titles', 'page');
+} else {
+    display_no_result('page titles');
+}
 
-
+// Page content.
+$res = search_page_content($search, $course->id);
+if ($res) {
+    display_result_links($res, 'page content', 'page');
+} else {
+    display_no_result('page content');
+}
 
 
 
