@@ -38,11 +38,11 @@ Forum           932     :)
 Feedback        641
 Quiz            579
 IMS content package 419
-Book            194
+Book            194     :)
 Choice          182
 Slideshow       153
 HotPot          90
-Glossary        86
+Glossary        86      :)
 Scheduler       57
 Wiki            36
 Lesson          35
@@ -233,7 +233,23 @@ if ($res) {
     display_no_result('book content');
 }
 
+// Assignment. /////////////////////////////////////////////////////////////////////////////////////
 
+// Assignment titles.
+$res = search_assignment_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'assignment titles', 'assignment');
+} else {
+    display_no_result('assignment titles');
+}
+
+// Assignment content.
+$res = search_assignment_submission($search, $course->id);
+if ($res) {
+    display_result_links($res, 'assignment content', 'assignment');
+} else {
+    display_no_result('assignment content');
+}
 
 
 

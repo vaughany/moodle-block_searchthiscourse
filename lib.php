@@ -632,6 +632,92 @@ function search_book_content($search, $cid) {
 }
 
 
+/*
+ * Search assignment titles for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_assignment_titles($search, $cid) {
+    global $CFG, $DB;
+
+    if (!check_plugin_visible('assignment')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."assignment.id, ".$CFG->prefix."assignment.name, ".$CFG->prefix."assignment.intro, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."assignment, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."assignment.course = ".$CFG->prefix."course_modules.course
+            AND (".$CFG->prefix."assignment.name LIKE '%$search%' OR intro LIKE '%$search%')
+            AND ".$CFG->prefix."modules.name = 'assignment'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."assignment.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('assignment', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/assignment/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+        } else {
+            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/assignment/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+        }
+    }
+    return $ret;
+}
+
+/*
+ * Search page content for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_assignment_submission($search, $cid) {
+    global $CFG, $DB;
+
+    if (!check_plugin_visible('assignment')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."assignment.id, ".$CFG->prefix."assignment.name, ".$CFG->prefix."assignment_submissions.data1, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."assignment, ".$CFG->prefix."assignment_submissions, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."assignment.course = ".$CFG->prefix."course_modules.course
+            AND (data1 LIKE '%$search%' OR data2 LIKE '%$search%' OR submissioncomment LIKE '%$search%')
+            AND ".$CFG->prefix."assignment_submissions.assignment = ".$CFG->prefix."assignment.id
+            AND ".$CFG->prefix."modules.name = 'assignment'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."assignment.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+
+        // Summarising the page's content.
+        $summary = summarise_content($row->data1);
+
+// TODO: Correct links to submitted assignment, not the assignment itself.
+
+        if (instance_is_visible('page', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.$summary.")\n";
+        } else {
+            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.$summary.")\n";
+        }
+    }
+    return $ret;
+}
+
+
+
+
+
+
 
 
 
