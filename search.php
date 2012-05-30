@@ -35,7 +35,7 @@ Assignment      2009    :)
 Folder          1323    :)
 SCORM package   958         :x
 Forum           932     :)
-Feedback        641
+Feedback        641     :)
 Quiz            579
 IMS content package 419
 Book            194     :)
@@ -284,6 +284,16 @@ if ($can_edit) {
         display_result_links($res, 'feedback questions', 'feedback');
     } else {
         display_no_result('feedback questions');
+    }
+}
+
+// Feedback answers.
+if ($can_edit) {
+    $res = search_feedback_answers($search, $course->id);
+    if ($res) {
+        display_result_links($res, 'feedback answers', 'feedback');
+    } else {
+        display_no_result('feedback answers');
     }
 }
 

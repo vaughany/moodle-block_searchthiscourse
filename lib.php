@@ -844,7 +844,6 @@ function search_feedback_titles($search, $cid) {
     return $ret;
 }
 
-
 /*
  * Search feedback questions for the keyword
  *
@@ -880,6 +879,48 @@ function search_feedback_questions($search, $cid) {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
                 $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/feedback/edit.php?id='.$row->cmid.'"> '.$row->fname.'</a>: ('.strip_tags($row->name).")\n";
+            }
+        }
+    }
+    return $ret;
+}
+
+/*
+ * Search feedback answers for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_feedback_answers($search, $cid) {
+    global $CFG, $DB, $can_edit;
+
+    if (!check_plugin_visible('feedback')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."feedback_value.id, ".$CFG->prefix."feedback.name, ".$CFG->prefix."course_modules.course,
+                ".$CFG->prefix."course_modules.id AS cmid, ".$CFG->prefix."feedback_value.value
+            FROM ".$CFG->prefix."feedback, ".$CFG->prefix."feedback_completed, ".$CFG->prefix."feedback_value, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."feedback.course = ".$CFG->prefix."course_modules.course
+            AND ".$CFG->prefix."feedback.id = ".$CFG->prefix."feedback_completed.feedback
+            AND ".$CFG->prefix."feedback_completed.feedback = ".$CFG->prefix."feedback_value.completed
+            AND ".$CFG->prefix."feedback_value.value LIKE '%$search%'
+            AND ".$CFG->prefix."modules.name = 'feedback'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."feedback.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('feedback', $row)) {
+                $ret[] = '<a href="'.$CFG->wwwroot.'/mod/feedback/analysis.php?id='.$row->cmid.'"> '.$row->value.'</a>: ('.strip_tags($row->name).")\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/feedback/analysis.php?id='.$row->cmid.'"> '.$row->value.'</a>: ('.strip_tags($row->name).")\n";
             }
         }
     }
