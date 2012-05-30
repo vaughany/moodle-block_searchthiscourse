@@ -26,6 +26,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
+$can_edit   = has_capability('moodle/course:update', get_context_instance(CONTEXT_COURSE, $COURSE->id));
 
 // Some functions summarise the content they get from the database to this number of characters.
 $summary_length = 75;
@@ -133,7 +134,7 @@ function display_no_result($title) {
  * @returns array
  */
 function search_forum_titles($search, $cid) {
-    global $CFG, $DB;
+    global $CFG, $DB, $can_edit;
 
     // Forums cannot be hidden globally, so little point checking!
     //if (!check_plugin_visible('forum')) {
@@ -146,7 +147,10 @@ function search_forum_titles($search, $cid) {
         if (instance_is_visible('forum', $row)) {
             $ret[] = html_writer::link(new moodle_url('/mod/forum/view.php', array('f' => $row->id)), $row->intro);
         } else {
-            $ret[] = html_writer::link(new moodle_url('/mod/forum/view.php', array('f' => $row->id)), $row->intro, array('class' => 'dimmed_text'));
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = html_writer::link(new moodle_url('/mod/forum/view.php', array('f' => $row->id)), $row->intro, array('class' => 'dimmed_text'));
+            }
         }
     }
     return $ret;
@@ -160,7 +164,7 @@ function search_forum_titles($search, $cid) {
  * @returns array
  */
 function search_forum_discussions($search, $cid) {
-    global $CFG, $DB;
+    global $CFG, $DB, $can_edit;
 
     $res = $DB->get_records_select('forum_discussions', "course = '$cid' AND name LIKE '%$search%'", array('id, name'));
     $ret = array();
@@ -168,7 +172,10 @@ function search_forum_discussions($search, $cid) {
         if (instance_is_visible('forum', $row)) {
             $ret[] = html_writer::link(new moodle_url('/mod/forum/discuss.php', array('d' => $row->id)), $row->name);
         } else {
-            $ret[] = html_writer::link(new moodle_url('/mod/forum/discuss.php', array('d' => $row->id)), $row->name, array('class' => 'dimmed_text'));
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = html_writer::link(new moodle_url('/mod/forum/discuss.php', array('d' => $row->id)), $row->name, array('class' => 'dimmed_text'));
+            }
         }
 
     }
@@ -183,7 +190,7 @@ function search_forum_discussions($search, $cid) {
  * @returns array
  */
 function search_forum_posts($search, $cid) {
-    global $CFG, $DB;
+    global $CFG, $DB, $can_edit;
 
     $sql = "SELECT ".$CFG->prefix."forum_posts.id AS pid, ".$CFG->prefix."forum.id,
                 ".$CFG->prefix."forum_posts.discussion, subject,
@@ -199,9 +206,12 @@ function search_forum_posts($search, $cid) {
         if (instance_is_visible('forum', $row)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$row->discussion.'#p'.$row->pid.'">'.$row->subject."</a>\n";
         } else {
-            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$row->discussion.'#p'.$row->pid.'">'.$row->subject."</a>\n";
-            //$ret[] = html_writer::link(new moodle_url('/mod/forum/discuss.php', array('d' => $row->discussion, '#p' => $row->id)), $row->subject);
-            // tried using html_writer::link here but it can't handle the # on the end.
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$row->discussion.'#p'.$row->pid.'">'.$row->subject."</a>\n";
+                //$ret[] = html_writer::link(new moodle_url('/mod/forum/discuss.php', array('d' => $row->discussion, '#p' => $row->id)), $row->subject);
+                // tried using html_writer::link here but it can't handle the # on the end.
+            }
         }
 
     }
@@ -218,7 +228,7 @@ function search_forum_posts($search, $cid) {
  * @returns array
  */
 function search_glossary_titles($search, $cid) {
-    global $CFG, $DB;
+    global $CFG, $DB, $can_edit;
 
     if (!check_plugin_visible('glossary')) {
         return false;
@@ -230,7 +240,10 @@ function search_glossary_titles($search, $cid) {
         if (instance_is_visible('forum', $row)) {
             $ret[] = html_writer::link(new moodle_url('/mod/glossary/view.php', array('id' => $row->id)), $row->name);
         } else {
-            $ret[] = html_writer::link(new moodle_url('/mod/glossary/view.php', array('id' => $row->id)), $row->name, array('class' => 'dimmed_text'));
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = html_writer::link(new moodle_url('/mod/glossary/view.php', array('id' => $row->id)), $row->name, array('class' => 'dimmed_text'));
+            }
         }
     }
     return $ret;
@@ -244,7 +257,7 @@ function search_glossary_titles($search, $cid) {
  * @returns array
  */
 function search_glossary_entries($search, $cid) {
-    global $CFG, $DB, $COURSE;
+    global $CFG, $DB, $can_edit;
 
     if (!check_plugin_visible('glossary')) {
         return false;
@@ -271,7 +284,10 @@ function search_glossary_entries($search, $cid) {
         if (instance_is_visible('label', $row)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept.'</a>: ('.strip_tags($row->definition).")\n";
         } else {
-            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept.'</a>: ('.strip_tags($row->definition).")\n";
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept.'</a>: ('.strip_tags($row->definition).")\n";
+            }
         }
 
     }
@@ -288,7 +304,7 @@ function search_glossary_entries($search, $cid) {
  * @returns array
  */
 function search_labels($search, $cid) {
-    global $CFG, $DB;
+    global $CFG, $DB, $can_edit;
 
     if (!check_plugin_visible('label')) {
         return false;
@@ -313,7 +329,10 @@ function search_labels($search, $cid) {
         if (instance_is_visible('label', $row)) {
             $ret[] = 'Search term found in a label in <a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section-1).'">section '.($row->section-1)."</a>\n";
         } else {
-            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section-1).'">Search term found in a <em>hidden</em> label in section '.($row->section-1)."</a>\n";
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section-1).'">Search term found in a <em>hidden</em> label in section '.($row->section-1)."</a>\n";
+            }
         }
 
     }
@@ -330,7 +349,7 @@ function search_labels($search, $cid) {
  * @returns array
  */
 function search_checklist_titles($search, $cid) {
-    global $CFG, $DB;
+    global $CFG, $DB, $can_edit;
 
     if (!check_plugin_visible('checklist')) {
         return false;
@@ -353,7 +372,10 @@ function search_checklist_titles($search, $cid) {
         if (instance_is_visible('checklist', $row)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/checklist/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
         } else {
-            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/checklist/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/checklist/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+            }
         }
     }
     return $ret;
@@ -368,7 +390,7 @@ function search_checklist_titles($search, $cid) {
  * @returns array
  */
 function search_url_titles($search, $cid) {
-    global $CFG, $DB;
+    global $CFG, $DB, $can_edit;
 
     if (!check_plugin_visible('url')) {
         return false;
@@ -391,7 +413,10 @@ function search_url_titles($search, $cid) {
         if (instance_is_visible('url', $row)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
         } else {
-            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+            }
         }
     }
     return $ret;
@@ -405,7 +430,7 @@ function search_url_titles($search, $cid) {
  * @returns array
  */
 function search_urls($search, $cid) {
-    global $CFG, $DB;
+    global $CFG, $DB, $can_edit;
 
     if (!check_plugin_visible('url')) {
         return false;
@@ -428,7 +453,10 @@ function search_urls($search, $cid) {
         if (instance_is_visible('url', $row)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: (<a href="'.$row->externalurl.'">'.$row->externalurl."</a>)\n";
         } else {
-            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: (<a href="'.$row->externalurl.'">'.$row->externalurl."</a>)\n";
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: (<a href="'.$row->externalurl.'">'.$row->externalurl."</a>)\n";
+            }
         }
     }
     return $ret;
@@ -443,7 +471,7 @@ function search_urls($search, $cid) {
  * @returns array
  */
 function search_page_titles($search, $cid) {
-    global $CFG, $DB;
+    global $CFG, $DB, $can_edit;
 
     if (!check_plugin_visible('page')) {
         return false;
@@ -466,7 +494,10 @@ function search_page_titles($search, $cid) {
         if (instance_is_visible('page', $row)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
         } else {
-            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+            }
         }
     }
     return $ret;
@@ -480,7 +511,7 @@ function search_page_titles($search, $cid) {
  * @returns array
  */
 function search_page_content($search, $cid) {
-    global $CFG, $DB;
+    global $CFG, $DB, $can_edit;
 
     if (!check_plugin_visible('page')) {
         return false;
@@ -507,7 +538,10 @@ function search_page_content($search, $cid) {
         if (instance_is_visible('page', $row)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.$summary.")\n";
         } else {
-            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.$summary.")\n";
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.$summary.")\n";
+            }
         }
     }
     return $ret;
@@ -523,7 +557,7 @@ function search_page_content($search, $cid) {
  */
 /*
 function search_filenames($search, $cid) {
-    global $CFG, $DB;
+    global $CFG, $DB, $can_edit;
 
     if (!check_plugin_visible('files')) {
         return false;
@@ -545,7 +579,10 @@ function search_filenames($search, $cid) {
         if (instance_is_visible('url', $row)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: (<a href="'.$row->externalurl.'">'.$row->externalurl."</a>)\n";
         } else {
-            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: (<a href="'.$row->externalurl.'">'.$row->externalurl."</a>)\n";
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: (<a href="'.$row->externalurl.'">'.$row->externalurl."</a>)\n";
+            }
         }
     }
     return $ret;
@@ -560,7 +597,7 @@ function search_filenames($search, $cid) {
  * @returns array
  */
 function search_book_titles($search, $cid) {
-    global $CFG, $DB;
+    global $CFG, $DB, $can_edit;
 
     if (!check_plugin_visible('book')) {
         return false;
@@ -583,7 +620,10 @@ function search_book_titles($search, $cid) {
         if (instance_is_visible('book', $row)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
         } else {
-            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+            }
         }
     }
     return $ret;
@@ -597,7 +637,7 @@ function search_book_titles($search, $cid) {
  * @returns array
  */
 function search_book_content($search, $cid) {
-    global $CFG, $DB;
+    global $CFG, $DB, $can_edit;
 
     if (!check_plugin_visible('book')) {
         return false;
@@ -625,7 +665,10 @@ function search_book_content($search, $cid) {
         if (instance_is_visible('book', $row)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'&chapterid='.$row->id.'"> '.$row->title.'</a>: ('.$summary.")\n";
         } else {
-            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'&chapterid='.$row->id.'"> '.$row->title.'</a>: ('.$summary.")\n";
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'&chapterid='.$row->id.'"> '.$row->title.'</a>: ('.$summary.")\n";
+            }
         }
     }
     return $ret;
@@ -640,7 +683,7 @@ function search_book_content($search, $cid) {
  * @returns array
  */
 function search_assignment_titles($search, $cid) {
-    global $CFG, $DB;
+    global $CFG, $DB, $can_edit;
 
     if (!check_plugin_visible('assignment')) {
         return false;
@@ -663,28 +706,31 @@ function search_assignment_titles($search, $cid) {
         if (instance_is_visible('assignment', $row)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/assignment/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
         } else {
-            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/assignment/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/assignment/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+            }
         }
     }
     return $ret;
 }
 
 /*
- * Search page content for the keyword
+ * Search assignment content for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
  * @returns array
  */
 function search_assignment_submission($search, $cid) {
-    global $CFG, $DB;
+    global $CFG, $DB, $can_edit;
 
     if (!check_plugin_visible('assignment')) {
         return false;
     }
 
-    $sql = "SELECT ".$CFG->prefix."assignment.id, ".$CFG->prefix."assignment.name, ".$CFG->prefix."assignment_submissions.data1, ".$CFG->prefix."course_modules.section,
-                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+    $sql = "SELECT ".$CFG->prefix."assignment_submissions.id, ".$CFG->prefix."assignment.name, ".$CFG->prefix."assignment_submissions.data1, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid, ".$CFG->prefix."assignment_submissions.userid AS uid
             FROM ".$CFG->prefix."assignment, ".$CFG->prefix."assignment_submissions, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."assignment.course = ".$CFG->prefix."course_modules.course
             AND (data1 LIKE '%$search%' OR data2 LIKE '%$search%' OR submissioncomment LIKE '%$search%')
@@ -699,15 +745,18 @@ function search_assignment_submission($search, $cid) {
     $ret = array();
     foreach ($res as $row) {
 
-        // Summarising the page's content.
+        // Summarising the assignment's content.
         $summary = summarise_content($row->data1);
 
-// TODO: Correct links to submitted assignment, not the assignment itself.
-
-        if (instance_is_visible('page', $row)) {
-            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.$summary.")\n";
+        if (instance_is_visible('assignment', $row)) {
+            //$ret[] = '<a href="'.$CFG->wwwroot.'/mod/assignment/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.$summary.")\n";
+            // http://172.21.4.85/sdcmoodle2/mod/assignment/type/online/file.php?id=75&userid=3
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/assignment/type/online/file.php?id='.$row->cmid.'&userid='.$row->uid.'"> '.$row->name.'</a>: ('.$summary.")\n";
         } else {
-            $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.$summary.")\n";
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/assignment/type/online/file.php?id='.$row->cmid.'&userid='.$row->uid.'"> '.$row->name.'</a>: ('.$summary.")\n";
+            }
         }
     }
     return $ret;

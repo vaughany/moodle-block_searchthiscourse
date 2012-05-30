@@ -60,8 +60,9 @@ External Tool   0
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 
-$id     = required_param('id', PARAM_INT);                          // course id
-$search = trim(required_param('search', PARAM_NOTAGS));             // search string
+$id         = required_param('id', PARAM_INT);                          // course id
+$search     = trim(required_param('search', PARAM_NOTAGS));             // search string
+$can_edit   = has_capability('moodle/course:update', get_context_instance(CONTEXT_COURSE, $COURSE->id));
 
 if (empty($search)) {
     redirect(new moodle_url('/course/view.php', array('id' => $id)));
@@ -102,7 +103,9 @@ $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 //echo $OUTPUT->heading(get_string('nopostscontaining', 'forum', $search));
 echo $OUTPUT->heading('SearchThisCourse Results');
-echo 'Note that if any results are found in hidden resouces, they will <span class="dimmed_text">appear greyed out</span>, and are only visible to those users with Teacher rights or better.';
+if ($can_edit) {
+    echo 'Note that if any results are found in hidden resouces, they will <span class="dimmed_text">appear greyed out</span>, and are only visible to those users with Teacher rights or better.';
+}
 echo html_writer::tag('hr', null);
 
 // Forums. /////////////////////////////////////////////////////////////////////////////////////////
@@ -244,13 +247,15 @@ if ($res) {
 }
 
 // Assignment content.
-$res = search_assignment_submission($search, $course->id);
-if ($res) {
-    display_result_links($res, 'assignment content', 'assignment');
-} else {
-    display_no_result('assignment content');
+// This search goes through submitted work so make it available to teachers or greater only.
+if ($can_edit) {
+    $res = search_assignment_submission($search, $course->id);
+    if ($res) {
+        display_result_links($res, 'assignment content', 'assignment');
+    } else {
+        display_no_result('assignment content');
+    }
 }
-
 
 
 
