@@ -31,9 +31,9 @@ File            42544
 URL             8599    :)
 Label           6990    :)
 Page            2192    :)
-Assignment      2009
-Folder          1323
-SCORM package   958
+Assignment      2009    :)
+Folder          1323    :)
+SCORM package   958         :x
 Forum           932     :)
 Feedback        641
 Quiz            579
@@ -257,6 +257,15 @@ if ($can_edit) {
     }
 }
 
+// Folder. /////////////////////////////////////////////////////////////////////////////////////////
+
+// Folder names.
+$res = search_folder_names($search, $course->id);
+if ($res) {
+    display_result_links($res, 'folder names', 'folder');
+} else {
+    display_no_result('folder names');
+}
 
 
 

@@ -763,6 +763,45 @@ function search_assignment_submission($search, $cid) {
 }
 
 
+/*
+ * Search folder names for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_folder_names($search, $cid) {
+    global $CFG, $DB, $can_edit;
+
+    if (!check_plugin_visible('folder')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."folder.id, ".$CFG->prefix."folder.name, ".$CFG->prefix."folder.intro, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."folder, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."folder.course = ".$CFG->prefix."course_modules.course
+            AND (".$CFG->prefix."folder.name LIKE '%$search%' OR intro LIKE '%$search%')
+            AND ".$CFG->prefix."modules.name = 'folder'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."folder.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('folder', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/folder/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/folder/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+            }
+        }
+    }
+    return $ret;
+}
 
 
 
