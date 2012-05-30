@@ -24,9 +24,9 @@ Being able to type 'cheese' (or any keyword of your choice) and search for it wh
 
 Installation is a matter of copying files to the correct location within your Moodle installation, but it is always wise to test new plugins in a sandbox environment first, and have the ability to roll back changes.
 
-Download the archive and extract the files, or [clone the repository from GitHub](https://github.com/vaughany/moodle-block_xkcd). You should see the following files and structure:
+Download the archive and extract the files, or [clone the repository from GitHub](https://github.com/vaughany/moodle-block_searchthiscourse). You should see the following files and structure:
 
-    xkcd/
+    searchthiscourse/
     |-- block_searchthiscourse.php
     |-- lang
     |   `-- en
