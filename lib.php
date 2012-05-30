@@ -804,6 +804,89 @@ function search_folder_names($search, $cid) {
 }
 
 
+/*
+ * Search feedback titles for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_feedback_titles($search, $cid) {
+    global $CFG, $DB, $can_edit;
+
+    if (!check_plugin_visible('feedback')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."feedback.id, ".$CFG->prefix."feedback.name, ".$CFG->prefix."feedback.intro, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."feedback, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."feedback.course = ".$CFG->prefix."course_modules.course
+            AND (".$CFG->prefix."feedback.name LIKE '%$search%' OR intro LIKE '%$search%')
+            AND ".$CFG->prefix."modules.name = 'feedback'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."feedback.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('feedback', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/feedback/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/feedback/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+            }
+        }
+    }
+    return $ret;
+}
+
+
+/*
+ * Search feedback questions for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_feedback_questions($search, $cid) {
+    global $CFG, $DB, $can_edit;
+
+    if (!check_plugin_visible('feedback')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."feedback_item.id, ".$CFG->prefix."feedback.name, ".$CFG->prefix."feedback_item.name AS fname,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."feedback, ".$CFG->prefix."feedback_item, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."feedback.course = ".$CFG->prefix."course_modules.course
+            AND ".$CFG->prefix."feedback.id = ".$CFG->prefix."feedback_item.feedback
+            AND ".$CFG->prefix."feedback_item.name LIKE '%$search%'
+            AND ".$CFG->prefix."modules.name = 'feedback'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."feedback.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('feedback', $row)) {
+                $ret[] = '<a href="'.$CFG->wwwroot.'/mod/feedback/edit.php?id='.$row->cmid.'"> '.$row->fname.'</a>: ('.strip_tags($row->name).")\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/feedback/edit.php?id='.$row->cmid.'"> '.$row->fname.'</a>: ('.strip_tags($row->name).")\n";
+            }
+        }
+    }
+    return $ret;
+}
+
+
 
 
 

@@ -267,7 +267,25 @@ if ($res) {
     display_no_result('folder names');
 }
 
+// Feedback. ///////////////////////////////////////////////////////////////////////////////////////
 
+// Feedback names.
+$res = search_feedback_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'feedback names', 'feedback');
+} else {
+    display_no_result('feedback names');
+}
+
+// Feedback questions.
+if ($can_edit) {
+    $res = search_feedback_questions($search, $course->id);
+    if ($res) {
+        display_result_links($res, 'feedback questions', 'feedback');
+    } else {
+        display_no_result('feedback questions');
+    }
+}
 
 
 
