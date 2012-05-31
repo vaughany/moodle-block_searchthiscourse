@@ -56,6 +56,9 @@ Currently it will search the current course in the following places:
 * URLs
     * titles
     * URL itself
+* Wiki
+    * titles
+
 
 ### Does not yet search through these standard Moodle 2.2 modules:
 
@@ -63,7 +66,6 @@ Currently it will search the current course in the following places:
 * Quiz            579
 * Resource        -
 * Survey          1
-* Wiki            36
 * Workshop        -
 
 ### Probably will never search through these standard Moodle 2.2 modules:
