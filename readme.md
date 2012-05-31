@@ -47,6 +47,9 @@ Currently it will search the current course in the following places:
     * titles
     * entries
 * Labels
+* Lesson
+    * titles
+    * pages
 * Page
     * titles
     * content
@@ -57,7 +60,6 @@ Currently it will search the current course in the following places:
 ### Does not yet search through these standard Moodle 2.2 modules:
 
 * Database        12
-* Lesson          35
 * Quiz            579
 * Resource        -
 * Survey          1
