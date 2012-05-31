@@ -1084,7 +1084,6 @@ function search_choice_titles($search, $cid) {
     return $ret;
 }
 
-
 /*
  * Search choice options for the keyword
  *
@@ -1126,6 +1125,87 @@ function search_choice_options($search, $cid) {
     return $ret;
 }
 
+
+/*
+ * Search lesson titles for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_lesson_titles($search, $cid) {
+    global $CFG, $DB, $can_edit;
+
+    if (!check_plugin_visible('choice')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."lesson.id, ".$CFG->prefix."lesson.name, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."lesson, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."lesson.course = ".$CFG->prefix."course_modules.course
+            AND ".$CFG->prefix."lesson.name LIKE '%$search%'
+            AND ".$CFG->prefix."modules.name = 'lesson'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."lesson.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('choice', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/lesson/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->name).")\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/lesson/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->name).")\n";
+            }
+        }
+    }
+    return $ret;
+}
+
+/*
+ * Search lesson pages for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_lesson_pages($search, $cid) {
+    global $CFG, $DB, $can_edit;
+
+    if (!check_plugin_visible('choice')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."lesson_pages.id, ".$CFG->prefix."lesson_pages.title, ".$CFG->prefix."lesson.name, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."lesson, ".$CFG->prefix."lesson_pages, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."lesson.course = ".$CFG->prefix."course_modules.course
+            AND ".$CFG->prefix."lesson.id = ".$CFG->prefix."lesson_pages.lessonid
+            AND (".$CFG->prefix."lesson_pages.title LIKE '%$search%' OR ".$CFG->prefix."lesson_pages.contents LIKE '%$search%')
+            AND ".$CFG->prefix."modules.name = 'lesson'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."lesson.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('choice', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/lesson/view.php?id='.$row->cmid.'&pageid='.$row->id.'">'.$row->title.'</a>: ('.strip_tags($row->name).")\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/lesson/view.php?id='.$row->cmid.'&pageid='.$row->id.'">'.$row->title.'</a>: ('.strip_tags($row->name).")\n";
+            }
+        }
+    }
+    return $ret;
+}
 
 
 

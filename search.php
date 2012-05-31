@@ -308,7 +308,33 @@ if ($res) {
     display_no_result('choice options', 'choice');
 }
 
+// Lesson //////////////////////////////////////////////////////////////////////////////////////////
 
+// Lesson titles.
+$res = search_lesson_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'lesson titles', 'lesson');
+} else {
+    display_no_result('lesson titles', 'lesson');
+}
+
+// Lesson pages.
+$res = search_lesson_pages($search, $course->id);
+if ($res) {
+    display_result_links($res, 'lesson pages', 'lesson');
+} else {
+    display_no_result('lesson pages', 'lesson');
+}
+
+// Lesson answers?
+/*
+$res = search_lesson_answers($search, $course->id);
+if ($res) {
+    display_result_links($res, 'lesson answers', 'lesson');
+} else {
+    display_no_result('lesson answers', 'lesson');
+}
+*/
 
 
 
