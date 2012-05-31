@@ -1,4 +1,4 @@
-# SearchThisCourse block for Moodle 2.x
+# SearchThisCourse block for Moodle 2.2
 
 Searches through a course and all it's resources for a keyword.
 
@@ -8,7 +8,7 @@ We have global searches and course searches and forum searches and a host of oth
 
 ## Licence
 
-SearchThisCourse block for Moodle 2.x, copyright &copy; 2012, Paul Vaughan.
+SearchThisCourse block for Moodle 2.2, copyright &copy; 2012, Paul Vaughan.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
@@ -18,7 +18,70 @@ You should have received a copy of the GNU General Public License along with thi
 
 ## Purpose
 
-Being able to type 'cheese' (or any keyword of your choice) and search for it whether it exists in a Label, Forum post, Book page or any core Moodle activity is something we don't often need to do, but have had no way of doing. Until now.
+Being able to type any keyword of your choice and search for it whether it exists in a Label, Forum post, Book chapter, Page or any core Moodle activity is something we don't often need to do, but have had no way of doing. Until now.
+
+Currently it will search the current course in the following places:
+
+### Standard Moodle 2.2 modules:
+
+* Assignment
+    * titles
+    * submissions (*teachers only*)
+* Book (core module in 2.3, but a third-party plugin for 2.2)
+* Feedback
+    * titles
+    * questions (*teachers only*)
+    * answers (*teachers only*)
+* Folder
+* Forum
+    * titles
+    * discussions
+    * posts
+* Glossary
+    * titles
+    * entries
+* Labels
+* Page
+    * titles
+    * content
+* URLs
+    * titles
+    * URL itself
+
+### Does not yet search through these standard Moodle 2.2 modules:
+
+* Chat            18
+* Choice          182
+* Database        12
+* Lesson          35
+* Quiz            579
+* Resource        -
+* Survey          1
+* Wiki            36
+* Workshop        -
+
+### Probably will never search through these standard Moodle 2.2 modules:
+
+* IMS content package
+* LTI
+* SCORM package
+
+### Searches through these third-party plugins:
+
+* Book
+    * titles
+    * content
+* Checklist
+
+### Does not yet search through these third-party plugins (and any others not mentioned here: this list exists as these are the extra plugins we use):
+
+* Certificate     14
+* HotPot          90
+* Journal         1
+* OU blog         3
+* OU wiki         15
+* Scheduler       57
+* Slideshow       153
 
 ## Installation
 
@@ -54,7 +117,7 @@ This block has none at this time.
 
 ## Known Issues
 
-This block has none at this time.
+This block has none at this time, aside the core and third-party plugins not yet added to the search.
 
 Should you find a bug, have an issue, feature request or new language pack, please [log an issue in the tracker](https://github.com/vaughany/moodle-block_searchthiscourse/issues) or fork the repo, fix the problem and submit a pull request.
 
