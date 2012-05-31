@@ -25,38 +25,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/*
-Moodle activities in decending order of use
-File            42544
-URL             8599    :)
-Label           6990    :)
-Page            2192    :)
-Assignment      2009    :)
-Folder          1323    :)
-SCORM package   958         :x
-Forum           932     :)
-Feedback        641     :)
-Quiz            579
-IMS content package 419
-Book            194     :)
-Choice          182
-Slideshow       153
-HotPot          90
-Glossary        86      :)
-Scheduler       57
-Wiki            36
-Lesson          35
-Chat            18
-OU wiki         15
-Certificate     14
-Database        12
-Workshop        4
-OU blog         3
-Journal         1
-Survey          1
-External Tool   0
-*/
-
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 
@@ -115,7 +83,7 @@ $res = search_forum_titles($search, $course->id);
 if ($res) {
     display_result_links($res, 'forum titles', 'forum');
 } else {
-    display_no_result('forum titles');
+    display_no_result('forum titles', 'forum');
 }
 
 // Forum discussions.
@@ -123,7 +91,7 @@ $res = search_forum_discussions($search, $course->id);
 if ($res) {
     display_result_links($res, 'forum discussions', 'forum');
 } else {
-    display_no_result('forum discussions');
+    display_no_result('forum discussions', 'forum');
 }
 
 // Forum posts.
@@ -131,7 +99,7 @@ $res = search_forum_posts($search, $course->id);
 if ($res) {
     display_result_links($res, 'forum posts', 'forum');
 } else {
-    display_no_result('forum posts');
+    display_no_result('forum posts', 'forum');
 }
 
 // Glossaries //////////////////////////////////////////////////////////////////////////////////////
@@ -141,7 +109,7 @@ $res = search_glossary_titles($search, $course->id);
 if ($res) {
     display_result_links($res, 'glossaries', 'glossary');
 } else {
-    display_no_result('glossaries');
+    display_no_result('glossaries', 'glossary');
 }
 
 // Glossary entries.
@@ -149,7 +117,7 @@ $res = search_glossary_entries($search, $course->id);
 if ($res) {
     display_result_links($res, 'glossary entries', 'glossary');
 } else {
-    display_no_result('glossary entries');
+    display_no_result('glossary entries', 'glossary');
 }
 
 // Labels //////////////////////////////////////////////////////////////////////////////////////////
@@ -157,6 +125,7 @@ if ($res) {
 // Labels.
 $res = search_labels($search, $course->id);
 if ($res) {
+    // Label mod has no icon.
     display_result_links($res, 'labels');
 } else {
     display_no_result('labels');
@@ -169,7 +138,7 @@ $res = search_checklist_titles($search, $course->id);
 if ($res) {
     display_result_links($res, 'checklist titles', 'checklist');
 } else {
-    display_no_result('checklist titles');
+    display_no_result('checklist titles', 'checklist');
 }
 
 // Files. //////////////////////////////////////////////////////////////////////////////////////////
@@ -179,7 +148,7 @@ if ($res) {
 if ($res) {
     display_result_links($res, 'file titles', 'files');
 } else {
-    display_no_result('file titles');
+    display_no_result('file titles', 'files');
 }*/
 
 // URLs. ///////////////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +158,7 @@ $res = search_url_titles($search, $course->id);
 if ($res) {
     display_result_links($res, 'URL titles', 'url');
 } else {
-    display_no_result('URL titles');
+    display_no_result('URL titles', 'url');
 }
 
 // URLs.
@@ -197,7 +166,7 @@ $res = search_urls($search, $course->id);
 if ($res) {
     display_result_links($res, 'URLs', 'url');
 } else {
-    display_no_result('URLs');
+    display_no_result('URLs', 'url');
 }
 
 // Pages. //////////////////////////////////////////////////////////////////////////////////////////
@@ -207,7 +176,7 @@ $res = search_page_titles($search, $course->id);
 if ($res) {
     display_result_links($res, 'page titles', 'page');
 } else {
-    display_no_result('page titles');
+    display_no_result('page titles', 'page');
 }
 
 // Page content.
@@ -215,25 +184,29 @@ $res = search_page_content($search, $course->id);
 if ($res) {
     display_result_links($res, 'page content', 'page');
 } else {
-    display_no_result('page content');
+    display_no_result('page content', 'page');
 }
 
 // Book. ///////////////////////////////////////////////////////////////////////////////////////////
 
 // Book titles.
-$res = search_book_titles($search, $course->id);
-if ($res) {
-    display_result_links($res, 'book titles', 'book');
-} else {
-    display_no_result('book titles');
-}
 
-// Book content.
-$res = search_book_content($search, $course->id);
-if ($res) {
-    display_result_links($res, 'book content', 'book');
-} else {
-    display_no_result('book content');
+// For non-core modules (as of 2.2) we check for installation first, then plugin visibility.
+if (check_plugin_installed('book')) {
+    $res = search_book_titles($search, $course->id);
+    if ($res) {
+        display_result_links($res, 'book titles', 'book');
+    } else {
+        display_no_result('book titles', 'book');
+    }
+
+    // Book content.
+    $res = search_book_content($search, $course->id);
+    if ($res) {
+        display_result_links($res, 'book content', 'book');
+    } else {
+        display_no_result('book content', 'book');
+    }
 }
 
 // Assignment. /////////////////////////////////////////////////////////////////////////////////////
@@ -243,7 +216,7 @@ $res = search_assignment_titles($search, $course->id);
 if ($res) {
     display_result_links($res, 'assignment titles', 'assignment');
 } else {
-    display_no_result('assignment titles');
+    display_no_result('assignment titles', 'assignment');
 }
 
 // Assignment content.
@@ -253,7 +226,7 @@ if ($can_edit) {
     if ($res) {
         display_result_links($res, 'assignment content', 'assignment');
     } else {
-        display_no_result('assignment content');
+        display_no_result('assignment content', 'assignment');
     }
 }
 
@@ -264,7 +237,7 @@ $res = search_folder_names($search, $course->id);
 if ($res) {
     display_result_links($res, 'folder names', 'folder');
 } else {
-    display_no_result('folder names');
+    display_no_result('folder names', 'folder');
 }
 
 // Feedback. ///////////////////////////////////////////////////////////////////////////////////////
@@ -274,7 +247,7 @@ $res = search_feedback_titles($search, $course->id);
 if ($res) {
     display_result_links($res, 'feedback names', 'feedback');
 } else {
-    display_no_result('feedback names');
+    display_no_result('feedback names', 'feedback');
 }
 
 // Feedback questions.
@@ -283,7 +256,7 @@ if ($can_edit) {
     if ($res) {
         display_result_links($res, 'feedback questions', 'feedback');
     } else {
-        display_no_result('feedback questions');
+        display_no_result('feedback questions', 'feedback');
     }
 }
 
@@ -293,7 +266,7 @@ if ($can_edit) {
     if ($res) {
         display_result_links($res, 'feedback answers', 'feedback');
     } else {
-        display_no_result('feedback answers');
+        display_no_result('feedback answers', 'feedback');
     }
 }
 
