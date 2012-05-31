@@ -336,7 +336,15 @@ if ($res) {
 }
 */
 
+// Wiki ////////////////////////////////////////////////////////////////////////////////////////////
 
+// Wiki titles.
+$res = search_wiki_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'wiki titles', 'wiki');
+} else {
+    display_no_result('wiki titles', 'wiki');
+}
 
 
 

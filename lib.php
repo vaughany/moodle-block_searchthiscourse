@@ -1208,6 +1208,46 @@ function search_lesson_pages($search, $cid) {
 }
 
 
+/*
+ * Search wiki titles for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_wiki_titles($search, $cid) {
+    global $CFG, $DB, $can_edit;
+
+    if (!check_plugin_visible('wiki')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."wiki.id, ".$CFG->prefix."wiki.name, firstpagetitle, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."wiki, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."wiki.course = ".$CFG->prefix."course_modules.course
+            AND (".$CFG->prefix."wiki.name LIKE '%$search%' OR ".$CFG->prefix."wiki.intro LIKE '%$search%' OR firstpagetitle LIKE '%$search%')
+            AND ".$CFG->prefix."modules.name = 'wiki'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."wiki.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('wiki', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/wiki/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->firstpagetitle).")\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/wiki/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->firstpagetitle).")\n";
+            }
+        }
+    }
+    return $ret;
+}
+
 
 
 
