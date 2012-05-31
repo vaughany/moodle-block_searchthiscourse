@@ -87,12 +87,52 @@ function display_result_links($res, $title, $module = null) {
         $img = '';
     }
 
-    echo $OUTPUT->box_start('generalbox');
+    //echo $OUTPUT->box_start('generalbox');
     echo "<p>{$img}Found the following $title:</p>\n<$listtype>\n";
     foreach ($res as $item) {
         echo "<li>$item</li>\n";
     }
-    echo "</$listtype>\n".$OUTPUT->box_end();
+    echo "</$listtype>\n";
+    //echo $OUTPUT->box_end();
+}
+
+
+/*
+ * Regular use function for displaying the lack of search results.
+ * @param string $title     Text snippet of the searched area.
+ */
+function display_no_result($title, $module = null) {
+    global $CFG;
+
+    if ($module) {
+        $img = '<img src="'.$CFG->wwwroot.'/theme/image.php?theme='.$CFG->theme.'&image=icon&component='.$module.'" alt="'.$module.'" title="'.$module.'" /> ';
+    } else {
+        $img = '';
+    }
+
+    echo "<p>{$img}Did not find the search term in $title.</p>\n";
+}
+
+
+
+/**
+ * Check the plugin is installed.
+ * @param string $name      Name of block or module (will take either).
+ * @return true or false
+ */
+function check_plugin_installed($name) {
+    global $DB;
+    $module = $DB->get_record('modules', array('name' => $name), 'id');
+    if ($module) {
+        return true;
+    } else {
+        $block = $DB->get_record('block', array('name' => $name), 'id');
+        if ($block) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 
@@ -114,15 +154,6 @@ function check_plugin_visible($name) {
             return false;
         }
     }
-}
-
-
-/*
- * Regular use function for displaying the lack of search results.
- * @param string $title     Text snippet of the searched area.
- */
-function display_no_result($title) {
-    echo "<p>Did not find the search term in $title.</p>\n";
 }
 
 
