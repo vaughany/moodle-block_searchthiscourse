@@ -290,6 +290,35 @@ if ($can_edit) {
     }
 }
 
+// Choice //////////////////////////////////////////////////////////////////////////////////////////
+
+// Choice titles.
+$res = search_choice_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'choice titles', 'choice');
+} else {
+    display_no_result('choice titles', 'choice');
+}
+
+// Choice options.
+$res = search_choice_options($search, $course->id);
+if ($res) {
+    display_result_links($res, 'choice options', 'choice');
+} else {
+    display_no_result('choice options', 'choice');
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

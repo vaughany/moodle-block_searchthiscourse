@@ -28,6 +28,12 @@ Currently it will search the current course in the following places:
     * titles
     * submissions (*teachers only*)
 * Book (core module in 2.3, but a third-party plugin for 2.2)
+* Chat
+    * titles
+    * messages (*teachers only*)
+* Choice
+    * titles
+    * options
 * Feedback
     * titles
     * questions (*teachers only*)
@@ -50,8 +56,6 @@ Currently it will search the current course in the following places:
 
 ### Does not yet search through these standard Moodle 2.2 modules:
 
-* Chat            18
-* Choice          182
 * Database        12
 * Lesson          35
 * Quiz            579

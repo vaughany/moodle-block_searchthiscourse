@@ -1044,6 +1044,95 @@ function search_chat_entries($search, $cid) {
     return $ret;
 }
 
+/*
+ * Search choice titles for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_choice_titles($search, $cid) {
+    global $CFG, $DB, $can_edit;
+
+    if (!check_plugin_visible('choice')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."choice.id, ".$CFG->prefix."choice.name, ".$CFG->prefix."choice.intro, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."choice, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."choice.course = ".$CFG->prefix."course_modules.course
+            AND (".$CFG->prefix."choice.name LIKE '%$search%' OR intro LIKE '%$search%')
+            AND ".$CFG->prefix."modules.name = 'choice'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."choice.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('choice', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/choice/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/choice/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+            }
+        }
+    }
+    return $ret;
+}
+
+
+/*
+ * Search choice options for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_choice_options($search, $cid) {
+    global $CFG, $DB, $can_edit, $USER;
+
+    if (!check_plugin_visible('choice')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."choice_options.id, ".$CFG->prefix."choice.id, ".$CFG->prefix."choice.name, text, ".$CFG->prefix."choice.intro, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."choice, ".$CFG->prefix."choice_options, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."choice.course = ".$CFG->prefix."course_modules.course
+            AND ".$CFG->prefix."choice_options.choiceid = ".$CFG->prefix."choice.id
+            AND text LIKE '%$search%'
+            AND ".$CFG->prefix."modules.name = 'choice'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."choice.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('choice', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/course/mod.php?sesskey='.$USER->sesskey.'&sr=1&update='.$row->cmid.'"> '.strip_tags($row->text).'</a>: ('.strip_tags($row->name).")\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/course/mod.php?sesskey='.$USER->sesskey.'&sr=1&update='.$row->cmid.'"> '.strip_tags($row->text).'</a>: ('.strip_tags($row->name).")\n";
+            }
+        }
+    }
+    return $ret;
+}
+
+
+
+
+
+
+
+
 
 
 
