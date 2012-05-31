@@ -28,17 +28,17 @@
 
 class block_searchthiscourse extends block_base {
 
-        function init() {
+    public function init() {
         $this->title = get_string('pluginname', 'block_searchthiscourse');
     }
 
-    function get_content() {
+    public function get_content() {
 
         global $CFG, $OUTPUT;
 
         include_once('lib.php');
 
-        if($this->content !== NULL) {
+        if ($this->content !== null) {
             return $this->content;
         }
 
@@ -62,25 +62,25 @@ class block_searchthiscourse extends block_base {
         $this->content->text .= '<label class="accesshide" for="searchform_search">'.$strsearch.'</label>'.
                                 '<input id="searchform_search" name="search" type="text" size="16" />';
         $this->content->text .= '<button id="searchform_button" type="submit" title="'.$strsearch.'">'.$strgo.'</button><br />';
-        //$this->content->text .= '<a href="'.$CFG->wwwroot.'/blocks/searchthiscourse/search.php?id='.$this->page->course->id.'">'.$advancedsearch.'</a>';
-        //$this->content->text .= $OUTPUT->help_icon('search');
+        // $this->content->text .= '<a href="'.$CFG->wwwroot.'/blocks/searchthiscourse/search.php?id='.$this->page->course->id.'">'.$advancedsearch.'</a>';
+        // $this->content->text .= $OUTPUT->help_icon('search');
         $this->content->text .= '</fieldset></form></div>';
 
-/*
+        /*
         $mform = new block_searchthiscourse_form(new moodle_url('/blocks/searchthiscourse/'));
-        //$mform->set_data((object) array('path' => $path));
+        // $mform->set_data((object) array('path' => $path));
         if ($data = $mform->get_data()) {
             //redirect(new moodle_url('/blocks/searchthiscourse/', array('path' => $data->path)));
             redirect(new moodle_url('/blocks/searchthiscourse/'));
         }
-        //$this->content->text .= $mform;
+        // $this->content->text .= $mform;
         $this->content->text .= $mform->display();
-*/
+        */
 
         return $this->content;
     }
 
-    function applicable_formats() {
+    public function applicable_formats() {
         return array(
             'site' => true,
             'course' => true,
