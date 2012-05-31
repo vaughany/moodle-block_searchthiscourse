@@ -50,15 +50,15 @@ add_to_log($course->id, 'searchthiscourse', 'search', 'search.php?id='.$course->
 $search = clean_search_terms($search);
 
 // lots of strings we prolly don't need
-//$strforums = get_string("modulenameplural", "forum");
-//$strsearch = get_string('search', 'forum');
+// $strforums = get_string("modulenameplural", "forum");
+// $strsearch = get_string('search', 'forum');
 $strsearchresults = get_string("searchresults", "forum");
-//$strpage = get_string("page");
+// $strpage = get_string("page");
 
-//$searchterms = str_replace('forumid:', 'instance:', $search);
-//$searchterms = explode(' ', $searchterms);
+// $searchterms = str_replace('forumid:', 'instance:', $search);
+// $searchterms = explode(' ', $searchterms);
 
-//$searchform = forum_search_form($course, $search);
+// $searchform = forum_search_form($course, $search);
 
 // nav
 $PAGE->navbar->add(get_string('pluginname', 'block_searchthiscourse'), new moodle_url('/blocks/searchthiscourse/search.php', array('id' => $course->id)));
@@ -69,7 +69,7 @@ $PAGE->set_heading($course->fullname);
 
 
 echo $OUTPUT->header();
-//echo $OUTPUT->heading(get_string('nopostscontaining', 'forum', $search));
+// echo $OUTPUT->heading(get_string('nopostscontaining', 'forum', $search));
 echo $OUTPUT->heading('SearchThisCourse Results');
 if ($can_edit) {
     echo 'Note that if any results are found in hidden resouces, they will <span class="dimmed_text">appear greyed out</span>, and are only visible to those users with Teacher rights or better.';
@@ -270,6 +270,25 @@ if ($can_edit) {
     }
 }
 
+// Chat ////////////////////////////////////////////////////////////////////////////////////////////
+
+// Chat titles.
+$res = search_chat_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'chat titles', 'chat');
+} else {
+    display_no_result('chat titles', 'chat');
+}
+
+// Chat entries
+if ($can_edit) {
+    $res = search_chat_entries($search, $course->id);
+    if ($res) {
+        display_result_links($res, 'chat conversations', 'chat');
+    } else {
+        display_no_result('chat conversations', 'chat');
+    }
+}
 
 
 
@@ -278,10 +297,8 @@ if ($can_edit) {
 
 
 
-
-
-//$sections = get_all_sections($id);
-//print_object($sections);
-//print_object($CFG->theme);
+// $sections = get_all_sections($id);
+// print_object($sections);
+// print_object($CFG->theme);
 
 echo $OUTPUT->footer();

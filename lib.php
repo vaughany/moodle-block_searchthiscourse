@@ -40,14 +40,13 @@ $summary_length = 75;
  * @param string $prefix    String to prepend to the each token taken out of $words
  * @returns array
  */
-//function clean_search_terms($words, $len=2, $prefix='') {
 function clean_search_terms($words, $len=2) {
     $searchterms = explode(' ', $words);
     foreach ($searchterms as $key => $searchterm) {
         if (strlen($searchterm) < $len) {
             unset($searchterms[$key]);
-//        } else if ($prefix) {
-//            $searchterms[$key] = $prefix.$searchterm;
+            // } else if ($prefix) {
+            // $searchterms[$key] = $prefix.$searchterm;
         }
     }
     return trim(implode(' ', $searchterms));
@@ -87,13 +86,13 @@ function display_result_links($res, $title, $module = null) {
         $img = '';
     }
 
-    //echo $OUTPUT->box_start('generalbox');
+    // echo $OUTPUT->box_start('generalbox');
     echo "<p>{$img}Found the following $title:</p>\n<$listtype>\n";
     foreach ($res as $item) {
         echo "<li>$item</li>\n";
     }
     echo "</$listtype>\n";
-    //echo $OUTPUT->box_end();
+    // echo $OUTPUT->box_end();
 }
 
 
@@ -168,9 +167,9 @@ function search_forum_titles($search, $cid) {
     global $CFG, $DB, $can_edit;
 
     // Forums cannot be hidden globally, so little point checking!
-    //if (!check_plugin_visible('forum')) {
+    // if (!check_plugin_visible('forum')) {
     //    return false;
-    //}
+    // }
 
     $res = $DB->get_records_select('forum', "course = '$cid' AND intro LIKE '%$search%'", array('id, intro'));
     $ret = array();
@@ -240,7 +239,7 @@ function search_forum_posts($search, $cid) {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
                 $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$row->discussion.'#p'.$row->pid.'">'.$row->subject."</a>\n";
-                //$ret[] = html_writer::link(new moodle_url('/mod/forum/discuss.php', array('d' => $row->discussion, '#p' => $row->id)), $row->subject);
+                // $ret[] = html_writer::link(new moodle_url('/mod/forum/discuss.php', array('d' => $row->discussion, '#p' => $row->id)), $row->subject);
                 // tried using html_writer::link here but it can't handle the # on the end.
             }
         }
@@ -780,7 +779,7 @@ function search_assignment_submission($search, $cid) {
         $summary = summarise_content($row->data1);
 
         if (instance_is_visible('assignment', $row)) {
-            //$ret[] = '<a href="'.$CFG->wwwroot.'/mod/assignment/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.$summary.")\n";
+            // $ret[] = '<a href="'.$CFG->wwwroot.'/mod/assignment/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.$summary.")\n";
             // http://172.21.4.85/sdcmoodle2/mod/assignment/type/online/file.php?id=75&userid=3
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/assignment/type/online/file.php?id='.$row->cmid.'&userid='.$row->uid.'"> '.$row->name.'</a>: ('.$summary.")\n";
         } else {
@@ -959,6 +958,91 @@ function search_feedback_answers($search, $cid) {
 }
 
 
+/*
+ * Search chat titles for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_chat_titles($search, $cid) {
+    global $CFG, $DB, $can_edit;
+
+    if (!check_plugin_visible('chat')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."chat.id, ".$CFG->prefix."chat.name, ".$CFG->prefix."chat.intro, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."chat, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."chat.course = ".$CFG->prefix."course_modules.course
+            AND (".$CFG->prefix."chat.name LIKE '%$search%' OR intro LIKE '%$search%')
+            AND ".$CFG->prefix."modules.name = 'chat'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."chat.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('chat', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/chat/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/chat/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.strip_tags($row->intro).")\n";
+            }
+        }
+    }
+    return $ret;
+}
+
+/*
+ * Search glossary entries for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_chat_entries($search, $cid) {
+    global $CFG, $DB, $can_edit;
+
+    if (!check_plugin_visible('chat')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."chat_messages.id, ".$CFG->prefix."chat_messages.chatid, message, ".$CFG->prefix."chat.name, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid,
+                ".$CFG->prefix."user.firstname, ".$CFG->prefix."user.lastname, ".$CFG->prefix."user.id AS uid
+            FROM ".$CFG->prefix."chat, ".$CFG->prefix."chat_messages, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules, ".$CFG->prefix."user
+            WHERE ".$CFG->prefix."chat.id = ".$CFG->prefix."chat_messages.chatid
+            AND message LIKE '%$search%'
+            AND system = '0'
+            AND ".$CFG->prefix."modules.name = 'chat'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."chat.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."'
+            AND ".$CFG->prefix."chat_messages.userid = ".$CFG->prefix."user.id
+            ORDER BY timestamp ASC;";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+
+        if (instance_is_visible('chat', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/user/profile.php?id='.$row->uid.'">'.$row->firstname.' '.$row->lastname.'</a>: <a href="'.$CFG->wwwroot.'/mod/chat/report.php?id='.$row->cmid.'"> '.$row->message.'</a>: ('.strip_tags($row->name).")\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/user/profile.php?id='.$row->uid.'">'.$row->firstname.' '.$row->lastname.'</a>: <a href="'.$CFG->wwwroot.'/mod/chat/report.php?id='.$row->cmid.'"> '.$row->message.'</a>: ('.strip_tags($row->name).")\n";
+            }
+        }
+
+    }
+    return $ret;
+}
 
 
 
@@ -986,13 +1070,13 @@ require_once($CFG->libdir . '/formslib.php');
 class block_searchthiscourse_form extends moodleform {
 
     protected function definition() {
-        //global $path;
+        // global $path;
         $mform = $this->_form;
 
         $a = new stdClass();
-        //$a->link = html_writer::link('http://docs.moodle.org/en/Development:Coding_style',
+        // $a->link = html_writer::link('http://docs.moodle.org/en/Development:Coding_style',
         //        get_string('moodlecodingguidelines', 'local_codechecker'));
-        //$a->path = html_writer::tag('tt', 'local/codechecker');
+        // $a->path = html_writer::tag('tt', 'local/codechecker');
         $mform->addElement('static', '', '', get_string('info', 'block_searchthiscourse', $a));
 
         $mform->addElement('text', 'path', get_string('path', 'block_searchthiscourse'));
