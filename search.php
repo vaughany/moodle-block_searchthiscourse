@@ -346,9 +346,21 @@ if ($res) {
     display_no_result('wiki titles', 'wiki');
 }
 
+// Wiki pages.
+$res = search_wiki_pages($search, $course->id);
+if ($res) {
+    display_result_links($res, 'wiki pages', 'wiki');
+} else {
+    display_no_result('wiki pages', 'wiki');
+}
 
-
-
+// Wiki versions (history).
+$res = search_wiki_versions($search, $course->id);
+if ($res) {
+    display_result_links($res, 'wiki versions', 'wiki');
+} else {
+    display_no_result('wiki versions', 'wiki');
+}
 
 
 
