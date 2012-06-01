@@ -362,7 +362,33 @@ if ($res) {
     display_no_result('wiki versions', 'wiki');
 }
 
+// Database ////////////////////////////////////////////////////////////////////////////////////////
 
+// Database titles.
+$res = search_data_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'database titles', 'data');
+} else {
+    display_no_result('database titles', 'data');
+}
+
+// Database fields.
+if ($can_edit) {
+    $res = search_data_fields($search, $course->id);
+    if ($res) {
+        display_result_links($res, 'database fields', 'data');
+    } else {
+        display_no_result('database fields', 'data');
+    }
+}
+
+// Database content.
+$res = search_data_content($search, $course->id);
+if ($res) {
+    display_result_links($res, 'database content', 'data');
+} else {
+    display_no_result('database content', 'data');
+}
 
 
 

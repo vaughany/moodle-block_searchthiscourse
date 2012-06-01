@@ -1331,6 +1331,143 @@ function search_wiki_versions($search, $cid) {
     return $ret;
 }
 
+/*
+ * Search data[base] titles for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_data_titles($search, $cid) {
+    global $CFG, $DB, $can_edit;
+
+    if (!check_plugin_visible('data')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."data.id, ".$CFG->prefix."data.name, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."data, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."data.course = ".$CFG->prefix."course_modules.course
+            AND (".$CFG->prefix."data.name LIKE '%$search%' OR ".$CFG->prefix."data.intro LIKE '%$search%')
+            AND ".$CFG->prefix."modules.name = 'data'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."data.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('data', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'"> '.$row->name."</a>\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'"> '.$row->name."</a>\n";
+            }
+        }
+    }
+    return $ret;
+}
+
+/*
+ * Search data[base] fields for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_data_fields($search, $cid) {
+    global $CFG, $DB, $can_edit;
+
+    if (!check_plugin_visible('data')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."data.id, ".$CFG->prefix."data.name, ".$CFG->prefix."data_fields.name AS dfname,
+                ".$CFG->prefix."course_modules.section, ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."data, ".$CFG->prefix."data_fields, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."data.course = ".$CFG->prefix."course_modules.course
+            AND ".$CFG->prefix."data_fields.dataid = ".$CFG->prefix."data.id
+            AND (".$CFG->prefix."data_fields.name LIKE '%$search%' OR ".$CFG->prefix."data_fields.description LIKE '%$search%')
+            AND ".$CFG->prefix."modules.name = 'data'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."data.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('data', $row)) {
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/data/field.php?d='.$row->id.'"> '.$row->dfname.'</a> (<a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.$row->name."</a>)\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/data/field.php?d='.$row->id.'"> '.$row->dfname.'</a> (<a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.$row->name."</a>)\n";
+            }
+        }
+    }
+    return $ret;
+}
+
+/*
+ * Search data[base] content for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_data_content($search, $cid) {
+    global $CFG, $DB, $can_edit;
+
+    if (!check_plugin_visible('data')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."data_content.id, ".$CFG->prefix."data.id AS did, ".$CFG->prefix."data.name, content, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."data, ".$CFG->prefix."data_content, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."data.course = ".$CFG->prefix."course_modules.course
+            AND ".$CFG->prefix."data_content.content LIKE '%$search%'
+            AND ".$CFG->prefix."modules.name = 'data'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."data.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+        if (instance_is_visible('data', $row)) {
+            $ret[] = $row->content.' (<a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.$row->name."</a>)\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<span class="dimmed_text">'.$row->content.' (<a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.$row->name."</a>)</span>\n";
+            }
+        }
+    }
+    return $ret;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
