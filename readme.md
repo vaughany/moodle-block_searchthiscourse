@@ -67,10 +67,11 @@ Currently it will search the current course in the following places:
 
 ### Does not yet search through these *standard* Moodle 2.2 modules:
 
-* Quiz            579
-* Resource        -
-* Survey          1
-* Workshop        -
+* File          42816
+* Quiz          579
+* Resource      -
+* Survey        1
+* Workshop      -
 
 ### Probably will never search through these *standard* Moodle 2.2 modules:
 
@@ -85,7 +86,7 @@ Currently it will search the current course in the following places:
     * content
 * Checklist
 
-### Does not yet search through these third-party plugins (and any others not mentioned here: this list exists as these are the extra plugins we use):
+### Does not yet search through these *third-party* plugins (and any others not mentioned here: this list exists as these are the extra plugins we use):
 
 * Certificate     14
 * HotPot          90
