@@ -58,7 +58,8 @@ Currently it will search the current course in the following places:
     * URL itself
 * Wiki
     * titles
-
+    * pages
+    * versions (the history of page edits)
 
 ### Does not yet search through these standard Moodle 2.2 modules:
 
