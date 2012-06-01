@@ -22,7 +22,7 @@ Being able to type any keyword of your choice and search for it whether it exist
 
 Currently it will search the current course in the following places:
 
-### Standard Moodle 2.2 modules:
+### *Standard* Moodle 2.2 modules:
 
 * Assignment
     * titles
@@ -34,6 +34,10 @@ Currently it will search the current course in the following places:
 * Choice
     * titles
     * options
+* Database
+    * titles
+    * fields (*teachers only*)
+    * content
 * Feedback
     * titles
     * questions (*teachers only*)
@@ -61,21 +65,20 @@ Currently it will search the current course in the following places:
     * pages
     * versions (the history of page edits)
 
-### Does not yet search through these standard Moodle 2.2 modules:
+### Does not yet search through these *standard* Moodle 2.2 modules:
 
-* Database        12
 * Quiz            579
 * Resource        -
 * Survey          1
 * Workshop        -
 
-### Probably will never search through these standard Moodle 2.2 modules:
+### Probably will never search through these *standard* Moodle 2.2 modules:
 
 * IMS content package
 * LTI
 * SCORM package
 
-### Searches through these third-party plugins:
+### Searches through these *third-party* plugins:
 
 * Book
     * titles
