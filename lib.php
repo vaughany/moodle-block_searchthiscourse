@@ -106,7 +106,8 @@ function display_no_result($title, $module = null) {
     if ($module) {
         $img = '<img src="'.$CFG->wwwroot.'/theme/image.php?theme='.$CFG->theme.'&image=icon&component='.$module.'" alt="'.$module.'" title="'.$module.'" /> ';
     } else {
-        $img = '';
+        //$img = '';
+        $img = '<img src="'.$CFG->wwwroot.'/theme/image.php?theme='.$CFG->theme.'&image=c%2Fcourse" alt="'.$module.'" title="'.$module.'" /> ';
     }
 
     echo "<p>{$img}Did not find the search term in $title.</p>\n";
@@ -172,6 +173,7 @@ function search_forum_titles($search, $cid) {
     // }
 
     $res = $DB->get_records_select('forum', "course = '$cid' AND intro LIKE '%$search%'", array('id, intro'));
+
     $ret = array();
     foreach ($res as $row) {
         if (instance_is_visible('forum', $row)) {
@@ -197,6 +199,7 @@ function search_forum_discussions($search, $cid) {
     global $CFG, $DB, $can_edit;
 
     $res = $DB->get_records_select('forum_discussions', "course = '$cid' AND name LIKE '%$search%'", array('id, name'));
+
     $ret = array();
     foreach ($res as $row) {
         if (instance_is_visible('forum', $row)) {
@@ -231,6 +234,7 @@ function search_forum_posts($search, $cid) {
             AND ".$CFG->prefix."forum_discussions.course = '$cid'
             AND (".$CFG->prefix."forum_posts.subject LIKE '%$search%' OR ".$CFG->prefix."forum_posts.message LIKE '%$search%');";
     $res = $DB->get_records_sql($sql);
+
     $ret = array();
     foreach ($res as $row) {
         if (instance_is_visible('forum', $row)) {
@@ -265,6 +269,7 @@ function search_glossary_titles($search, $cid) {
     }
 
     $res = $DB->get_records_select('glossary', "course = '$cid' AND name LIKE '%$search%' OR intro LIKE '%$search%'", array('id, name'));
+
     $ret = array();
     foreach ($res as $row) {
         if (instance_is_visible('forum', $row)) {
@@ -1454,7 +1459,35 @@ function search_data_content($search, $cid) {
     return $ret;
 }
 
+/*
+ * Search course names for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_course_names($search, $cid) {
+    global $CFG, $DB, $can_edit;
 
+    //if (!check_plugin_visible('data')) {
+    //    return false;
+    //}
+
+    $res = $DB->get_records_select('course', "id = '$cid' AND (fullname LIKE '%$search%' OR shortname LIKE '%$search%' OR idnumber LIKE '%$search%')", array('id, fullname, shortname, visible'));
+
+    $ret = array();
+    foreach ($res as $row) {
+        if ($row->visible) {
+            $ret[] = html_writer::link(new moodle_url('/course/view.php', array('id' => $row->id)), $row->shortname);
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = html_writer::link(new moodle_url('/course/view.php', array('id' => $row->id)), $row->shortname, array('class' => 'dimmed_text'));
+            }
+        }
+    }
+    return $ret;
+}
 
 
 

@@ -166,6 +166,24 @@ if ($res) {
     display_no_result('choice options', 'choice');
 }
 
+// Course //////////////////////////////////////////////////////////////////////////////////////////
+
+// Course names.
+$res = search_course_names($search, $course->id);
+if ($res) {
+    display_result_links($res, 'course names', null);
+} else {
+    display_no_result('course names', null);
+}
+
+// Course summary.
+//$res = search_choice_options($search, $course->id);
+//if ($res) {
+//    display_result_links($res, 'choice options', 'choice');
+//} else {
+//    display_no_result('choice options', 'choice');
+//}
+
 // Database ////////////////////////////////////////////////////////////////////////////////////////
 
 // Database titles.
