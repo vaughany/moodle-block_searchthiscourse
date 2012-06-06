@@ -79,6 +79,11 @@ Currently it will search the current course in the following places:
 * LTI
 * SCORM package
 
+### Does not yet search through these core Moodle areas:
+
+* Course name / description / topic headers
+* User description / custom fields
+
 ### Searches through these *third-party* plugins:
 
 * Book
@@ -95,6 +100,7 @@ Currently it will search the current course in the following places:
 * OU wiki         15
 * Scheduler       57
 * Slideshow       153
+* Realtime Quiz   -
 
 ## Installation
 
