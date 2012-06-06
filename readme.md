@@ -1,10 +1,10 @@
 # SearchThisCourse block for Moodle 2.2
 
-Searches through a course and all it's resources for a keyword.
+Deep-searches through a whole course for a keyword.
 
 ## Introduction
 
-We have global searches and course searches and forum searches and a host of other search options, but what we don't have is the ability to search exactly one whole, entire course for a keyword (or keywords).
+We have global searches and course searches and forum searches and a host of other search options, but what we don't have is the ability to search exactly one whole, entire course and all that course's plugin instances for a keyword (or keywords). This is known as 'deep searching'.
 
 ## Licence
 
@@ -79,7 +79,7 @@ Currently it will search the current course in the following places:
 * LTI
 * SCORM package
 
-### Does not yet search through these core Moodle areas:
+### Does not yet search through these *core* Moodle areas:
 
 * Course name / description / topic headers
 * User description / custom fields
