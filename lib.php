@@ -1426,10 +1426,12 @@ function search_data_content($search, $cid) {
         return false;
     }
 
-    $sql = "SELECT ".$CFG->prefix."data_content.id, ".$CFG->prefix."data.id AS did, ".$CFG->prefix."data.name, content, ".$CFG->prefix."course_modules.section,
-                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
-            FROM ".$CFG->prefix."data, ".$CFG->prefix."data_content, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+    $sql = "SELECT ".$CFG->prefix."data_content.id, ".$CFG->prefix."data.id AS did, ".$CFG->prefix."data.name, content,
+                ".$CFG->prefix."course_modules.section, ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."data, ".$CFG->prefix."data_content, ".$CFG->prefix."data_fields, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."data.course = ".$CFG->prefix."course_modules.course
+            AND ".$CFG->prefix."data_content.fieldid = ".$CFG->prefix."data_fields.id
+            AND ".$CFG->prefix."data_fields.dataid = ".$CFG->prefix."data.id
             AND ".$CFG->prefix."data_content.content LIKE '%$search%'
             AND ".$CFG->prefix."modules.name = 'data'
             AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
@@ -1441,11 +1443,11 @@ function search_data_content($search, $cid) {
     $ret = array();
     foreach ($res as $row) {
         if (instance_is_visible('data', $row)) {
-            $ret[] = $row->content.' (<a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.$row->name."</a>)\n";
+            $ret[] = strip_tags($row->content).' (<a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.strip_tags($row->name)."</a>)\n";
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text">'.$row->content.' (<a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.$row->name."</a>)</span>\n";
+                $ret[] = '<span class="dimmed_text">'.strip_tags($row->content).' (<a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.strip_tags($row->name)."</a>)</span>\n";
             }
         }
     }

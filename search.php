@@ -76,6 +76,174 @@ if ($can_edit) {
 }
 echo html_writer::tag('hr', null);
 
+// Assignment. /////////////////////////////////////////////////////////////////////////////////////
+
+// Assignment titles.
+$res = search_assignment_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'assignment titles', 'assignment');
+} else {
+    display_no_result('assignment titles', 'assignment');
+}
+
+// Assignment content.
+// This search goes through submitted work so make it available to teachers or greater only.
+if ($can_edit) {
+    $res = search_assignment_submission($search, $course->id);
+    if ($res) {
+        display_result_links($res, 'assignment content', 'assignment');
+    } else {
+        display_no_result('assignment content', 'assignment');
+    }
+}
+
+// Book. ///////////////////////////////////////////////////////////////////////////////////////////
+
+// Book titles.
+// For non-core modules (as of 2.2) we check for installation first, then plugin visibility.
+if (check_plugin_installed('book')) {
+    $res = search_book_titles($search, $course->id);
+    if ($res) {
+        display_result_links($res, 'book titles', 'book');
+    } else {
+        display_no_result('book titles', 'book');
+    }
+
+    // Book content.
+    $res = search_book_content($search, $course->id);
+    if ($res) {
+        display_result_links($res, 'book content', 'book');
+    } else {
+        display_no_result('book content', 'book');
+    }
+}
+
+// Chat ////////////////////////////////////////////////////////////////////////////////////////////
+
+// Chat titles.
+$res = search_chat_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'chat titles', 'chat');
+} else {
+    display_no_result('chat titles', 'chat');
+}
+
+// Chat entries
+if ($can_edit) {
+    $res = search_chat_entries($search, $course->id);
+    if ($res) {
+        display_result_links($res, 'chat conversations', 'chat');
+    } else {
+        display_no_result('chat conversations', 'chat');
+    }
+}
+
+// Checklists. /////////////////////////////////////////////////////////////////////////////////////
+
+// Checklist titles.
+$res = search_checklist_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'checklist titles', 'checklist');
+} else {
+    display_no_result('checklist titles', 'checklist');
+}
+
+// Choice //////////////////////////////////////////////////////////////////////////////////////////
+
+// Choice titles.
+$res = search_choice_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'choice titles', 'choice');
+} else {
+    display_no_result('choice titles', 'choice');
+}
+
+// Choice options.
+$res = search_choice_options($search, $course->id);
+if ($res) {
+    display_result_links($res, 'choice options', 'choice');
+} else {
+    display_no_result('choice options', 'choice');
+}
+
+// Database ////////////////////////////////////////////////////////////////////////////////////////
+
+// Database titles.
+$res = search_data_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'database titles', 'data');
+} else {
+    display_no_result('database titles', 'data');
+}
+
+// Database fields.
+if ($can_edit) {
+    $res = search_data_fields($search, $course->id);
+    if ($res) {
+        display_result_links($res, 'database fields', 'data');
+    } else {
+        display_no_result('database fields', 'data');
+    }
+}
+
+// Database content.
+$res = search_data_content($search, $course->id);
+if ($res) {
+    display_result_links($res, 'database content', 'data');
+} else {
+    display_no_result('database content', 'data');
+}
+
+// Feedback. ///////////////////////////////////////////////////////////////////////////////////////
+
+// Feedback names.
+$res = search_feedback_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'feedback names', 'feedback');
+} else {
+    display_no_result('feedback names', 'feedback');
+}
+
+// Feedback questions.
+if ($can_edit) {
+    $res = search_feedback_questions($search, $course->id);
+    if ($res) {
+        display_result_links($res, 'feedback questions', 'feedback');
+    } else {
+        display_no_result('feedback questions', 'feedback');
+    }
+}
+
+// Feedback answers.
+if ($can_edit) {
+    $res = search_feedback_answers($search, $course->id);
+    if ($res) {
+        display_result_links($res, 'feedback answers', 'feedback');
+    } else {
+        display_no_result('feedback answers', 'feedback');
+    }
+}
+
+// Files. //////////////////////////////////////////////////////////////////////////////////////////
+
+// File names.
+/*$res = search_filenames($search, $course->id);
+if ($res) {
+    display_result_links($res, 'file titles', 'files');
+} else {
+    display_no_result('file titles', 'files');
+}*/
+
+// Folder. /////////////////////////////////////////////////////////////////////////////////////////
+
+// Folder names.
+$res = search_folder_names($search, $course->id);
+if ($res) {
+    display_result_links($res, 'folder names', 'folder');
+} else {
+    display_no_result('folder names', 'folder');
+}
+
 // Forums. /////////////////////////////////////////////////////////////////////////////////////////
 
 // Forum titles.
@@ -131,183 +299,6 @@ if ($res) {
     display_no_result('labels');
 }
 
-// Checklists. /////////////////////////////////////////////////////////////////////////////////////
-
-// Checklist titles.
-$res = search_checklist_titles($search, $course->id);
-if ($res) {
-    display_result_links($res, 'checklist titles', 'checklist');
-} else {
-    display_no_result('checklist titles', 'checklist');
-}
-
-// Files. //////////////////////////////////////////////////////////////////////////////////////////
-
-// File names.
-/*$res = search_filenames($search, $course->id);
-if ($res) {
-    display_result_links($res, 'file titles', 'files');
-} else {
-    display_no_result('file titles', 'files');
-}*/
-
-// URLs. ///////////////////////////////////////////////////////////////////////////////////////////
-
-// URL titles.
-$res = search_url_titles($search, $course->id);
-if ($res) {
-    display_result_links($res, 'URL titles', 'url');
-} else {
-    display_no_result('URL titles', 'url');
-}
-
-// URLs.
-$res = search_urls($search, $course->id);
-if ($res) {
-    display_result_links($res, 'URLs', 'url');
-} else {
-    display_no_result('URLs', 'url');
-}
-
-// Pages. //////////////////////////////////////////////////////////////////////////////////////////
-
-// Page titles.
-$res = search_page_titles($search, $course->id);
-if ($res) {
-    display_result_links($res, 'page titles', 'page');
-} else {
-    display_no_result('page titles', 'page');
-}
-
-// Page content.
-$res = search_page_content($search, $course->id);
-if ($res) {
-    display_result_links($res, 'page content', 'page');
-} else {
-    display_no_result('page content', 'page');
-}
-
-// Book. ///////////////////////////////////////////////////////////////////////////////////////////
-
-// Book titles.
-
-// For non-core modules (as of 2.2) we check for installation first, then plugin visibility.
-if (check_plugin_installed('book')) {
-    $res = search_book_titles($search, $course->id);
-    if ($res) {
-        display_result_links($res, 'book titles', 'book');
-    } else {
-        display_no_result('book titles', 'book');
-    }
-
-    // Book content.
-    $res = search_book_content($search, $course->id);
-    if ($res) {
-        display_result_links($res, 'book content', 'book');
-    } else {
-        display_no_result('book content', 'book');
-    }
-}
-
-// Assignment. /////////////////////////////////////////////////////////////////////////////////////
-
-// Assignment titles.
-$res = search_assignment_titles($search, $course->id);
-if ($res) {
-    display_result_links($res, 'assignment titles', 'assignment');
-} else {
-    display_no_result('assignment titles', 'assignment');
-}
-
-// Assignment content.
-// This search goes through submitted work so make it available to teachers or greater only.
-if ($can_edit) {
-    $res = search_assignment_submission($search, $course->id);
-    if ($res) {
-        display_result_links($res, 'assignment content', 'assignment');
-    } else {
-        display_no_result('assignment content', 'assignment');
-    }
-}
-
-// Folder. /////////////////////////////////////////////////////////////////////////////////////////
-
-// Folder names.
-$res = search_folder_names($search, $course->id);
-if ($res) {
-    display_result_links($res, 'folder names', 'folder');
-} else {
-    display_no_result('folder names', 'folder');
-}
-
-// Feedback. ///////////////////////////////////////////////////////////////////////////////////////
-
-// Feedback names.
-$res = search_feedback_titles($search, $course->id);
-if ($res) {
-    display_result_links($res, 'feedback names', 'feedback');
-} else {
-    display_no_result('feedback names', 'feedback');
-}
-
-// Feedback questions.
-if ($can_edit) {
-    $res = search_feedback_questions($search, $course->id);
-    if ($res) {
-        display_result_links($res, 'feedback questions', 'feedback');
-    } else {
-        display_no_result('feedback questions', 'feedback');
-    }
-}
-
-// Feedback answers.
-if ($can_edit) {
-    $res = search_feedback_answers($search, $course->id);
-    if ($res) {
-        display_result_links($res, 'feedback answers', 'feedback');
-    } else {
-        display_no_result('feedback answers', 'feedback');
-    }
-}
-
-// Chat ////////////////////////////////////////////////////////////////////////////////////////////
-
-// Chat titles.
-$res = search_chat_titles($search, $course->id);
-if ($res) {
-    display_result_links($res, 'chat titles', 'chat');
-} else {
-    display_no_result('chat titles', 'chat');
-}
-
-// Chat entries
-if ($can_edit) {
-    $res = search_chat_entries($search, $course->id);
-    if ($res) {
-        display_result_links($res, 'chat conversations', 'chat');
-    } else {
-        display_no_result('chat conversations', 'chat');
-    }
-}
-
-// Choice //////////////////////////////////////////////////////////////////////////////////////////
-
-// Choice titles.
-$res = search_choice_titles($search, $course->id);
-if ($res) {
-    display_result_links($res, 'choice titles', 'choice');
-} else {
-    display_no_result('choice titles', 'choice');
-}
-
-// Choice options.
-$res = search_choice_options($search, $course->id);
-if ($res) {
-    display_result_links($res, 'choice options', 'choice');
-} else {
-    display_no_result('choice options', 'choice');
-}
-
 // Lesson //////////////////////////////////////////////////////////////////////////////////////////
 
 // Lesson titles.
@@ -336,6 +327,42 @@ if ($res) {
 }
 */
 
+// Pages. //////////////////////////////////////////////////////////////////////////////////////////
+
+// Page titles.
+$res = search_page_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'page titles', 'page');
+} else {
+    display_no_result('page titles', 'page');
+}
+
+// Page content.
+$res = search_page_content($search, $course->id);
+if ($res) {
+    display_result_links($res, 'page content', 'page');
+} else {
+    display_no_result('page content', 'page');
+}
+
+// URLs. ///////////////////////////////////////////////////////////////////////////////////////////
+
+// URL titles.
+$res = search_url_titles($search, $course->id);
+if ($res) {
+    display_result_links($res, 'URL titles', 'url');
+} else {
+    display_no_result('URL titles', 'url');
+}
+
+// URLs.
+$res = search_urls($search, $course->id);
+if ($res) {
+    display_result_links($res, 'URLs', 'url');
+} else {
+    display_no_result('URLs', 'url');
+}
+
 // Wiki ////////////////////////////////////////////////////////////////////////////////////////////
 
 // Wiki titles.
@@ -362,33 +389,6 @@ if ($res) {
     display_no_result('wiki versions', 'wiki');
 }
 
-// Database ////////////////////////////////////////////////////////////////////////////////////////
-
-// Database titles.
-$res = search_data_titles($search, $course->id);
-if ($res) {
-    display_result_links($res, 'database titles', 'data');
-} else {
-    display_no_result('database titles', 'data');
-}
-
-// Database fields.
-if ($can_edit) {
-    $res = search_data_fields($search, $course->id);
-    if ($res) {
-        display_result_links($res, 'database fields', 'data');
-    } else {
-        display_no_result('database fields', 'data');
-    }
-}
-
-// Database content.
-$res = search_data_content($search, $course->id);
-if ($res) {
-    display_result_links($res, 'database content', 'data');
-} else {
-    display_no_result('database content', 'data');
-}
 
 
 
