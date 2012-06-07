@@ -79,9 +79,12 @@ Currently it will search the current course in the following places:
 * LTI
 * SCORM package
 
+### Searches through these *core* Moodle areas:
+
+* Course name / description / section names
+
 ### Does not yet search through these *core* Moodle areas:
 
-* Course name / description / topic headers
 * User description / custom fields
 
 ### Searches through these *third-party* plugins:
@@ -91,16 +94,20 @@ Currently it will search the current course in the following places:
     * content
 * Checklist
 
-### Does not yet search through these *third-party* plugins (and any others not mentioned here: this list exists as these are the extra plugins we use):
+### Does not yet search through these *third-party* plugins:
 
-* Certificate     14
-* HotPot          90
-* Journal         1
-* OU blog         3
-* OU wiki         15
-* Scheduler       57
-* Slideshow       153
-* Realtime Quiz   -
+* Certificate       14
+* HotPot            90
+* Journal           1
+* OU blog           3
+* OU wiki           15
+* Realtime Quiz     -
+* Scheduler         57
+* Slideshow         153
+
+Note that these plugins are on this list only because these are the third party plugins already in use by South Devon College. There are many more plugins, we just don't use them all. :)
+
+If you'd like to request a new plugin be searched by this plugin, [raise an isue on GitHub](https://github.com/vaughany/moodle-block_searchthiscourse/issues) and I will see what I can do.  Alternatively, fork the repository, fix the problem and submit a pull request.
 
 ## Installation
 
@@ -150,4 +157,4 @@ Thanks.
 
 ## History
 
-Still in alpha at this time.
+Beta testing.
