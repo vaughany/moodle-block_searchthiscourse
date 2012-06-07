@@ -81,7 +81,7 @@ echo html_writer::tag('hr', null);
 // Assignment titles.
 $res = search_assignment_titles($search, $course->id);
 if ($res) {
-    display_result_links($res, 'assignment titles', 'assignment');
+    display_result($res, 'assignment titles', 'assignment');
 } else {
     display_no_result('assignment titles', 'assignment');
 }
@@ -91,7 +91,7 @@ if ($res) {
 if ($can_edit) {
     $res = search_assignment_submission($search, $course->id);
     if ($res) {
-        display_result_links($res, 'assignment content', 'assignment');
+        display_result($res, 'assignment content', 'assignment');
     } else {
         display_no_result('assignment content', 'assignment');
     }
@@ -104,7 +104,7 @@ if ($can_edit) {
 if (check_plugin_installed('book')) {
     $res = search_book_titles($search, $course->id);
     if ($res) {
-        display_result_links($res, 'book titles', 'book');
+        display_result($res, 'book titles', 'book');
     } else {
         display_no_result('book titles', 'book');
     }
@@ -112,7 +112,7 @@ if (check_plugin_installed('book')) {
     // Book content.
     $res = search_book_content($search, $course->id);
     if ($res) {
-        display_result_links($res, 'book content', 'book');
+        display_result($res, 'book content', 'book');
     } else {
         display_no_result('book content', 'book');
     }
@@ -123,7 +123,7 @@ if (check_plugin_installed('book')) {
 // Chat titles.
 $res = search_chat_titles($search, $course->id);
 if ($res) {
-    display_result_links($res, 'chat titles', 'chat');
+    display_result($res, 'chat titles', 'chat');
 } else {
     display_no_result('chat titles', 'chat');
 }
@@ -132,7 +132,7 @@ if ($res) {
 if ($can_edit) {
     $res = search_chat_entries($search, $course->id);
     if ($res) {
-        display_result_links($res, 'chat conversations', 'chat');
+        display_result($res, 'chat conversations', 'chat');
     } else {
         display_no_result('chat conversations', 'chat');
     }
@@ -143,7 +143,7 @@ if ($can_edit) {
 // Checklist titles.
 $res = search_checklist_titles($search, $course->id);
 if ($res) {
-    display_result_links($res, 'checklist titles', 'checklist');
+    display_result($res, 'checklist titles', 'checklist');
 } else {
     display_no_result('checklist titles', 'checklist');
 }
@@ -153,7 +153,7 @@ if ($res) {
 // Choice titles.
 $res = search_choice_titles($search, $course->id);
 if ($res) {
-    display_result_links($res, 'choice titles', 'choice');
+    display_result($res, 'choice titles', 'choice');
 } else {
     display_no_result('choice titles', 'choice');
 }
@@ -161,7 +161,7 @@ if ($res) {
 // Choice options.
 $res = search_choice_options($search, $course->id);
 if ($res) {
-    display_result_links($res, 'choice options', 'choice');
+    display_result($res, 'choice options', 'choice');
 } else {
     display_no_result('choice options', 'choice');
 }
@@ -171,7 +171,7 @@ if ($res) {
 // Course names.
 $res = search_course_names($search, $course->id);
 if ($res) {
-    display_result_links($res, 'course names', null);
+    display_result($res, 'course names', null);
 } else {
     display_no_result('course names', null);
 }
@@ -179,7 +179,7 @@ if ($res) {
 // Course summary.
 //$res = search_choice_options($search, $course->id);
 //if ($res) {
-//    display_result_links($res, 'choice options', 'choice');
+//    display_result($res, 'choice options', 'choice');
 //} else {
 //    display_no_result('choice options', 'choice');
 //}
@@ -189,7 +189,7 @@ if ($res) {
 // Database titles.
 $res = search_data_titles($search, $course->id);
 if ($res) {
-    display_result_links($res, 'database titles', 'data');
+    display_result($res, 'database titles', 'data');
 } else {
     display_no_result('database titles', 'data');
 }
@@ -198,7 +198,7 @@ if ($res) {
 if ($can_edit) {
     $res = search_data_fields($search, $course->id);
     if ($res) {
-        display_result_links($res, 'database fields', 'data');
+        display_result($res, 'database fields', 'data');
     } else {
         display_no_result('database fields', 'data');
     }
@@ -207,7 +207,7 @@ if ($can_edit) {
 // Database content.
 $res = search_data_content($search, $course->id);
 if ($res) {
-    display_result_links($res, 'database content', 'data');
+    display_result($res, 'database content', 'data');
 } else {
     display_no_result('database content', 'data');
 }
@@ -217,7 +217,7 @@ if ($res) {
 // Feedback names.
 $res = search_feedback_titles($search, $course->id);
 if ($res) {
-    display_result_links($res, 'feedback names', 'feedback');
+    display_result($res, 'feedback names', 'feedback');
 } else {
     display_no_result('feedback names', 'feedback');
 }
@@ -226,7 +226,7 @@ if ($res) {
 if ($can_edit) {
     $res = search_feedback_questions($search, $course->id);
     if ($res) {
-        display_result_links($res, 'feedback questions', 'feedback');
+        display_result($res, 'feedback questions', 'feedback');
     } else {
         display_no_result('feedback questions', 'feedback');
     }
@@ -236,7 +236,7 @@ if ($can_edit) {
 if ($can_edit) {
     $res = search_feedback_answers($search, $course->id);
     if ($res) {
-        display_result_links($res, 'feedback answers', 'feedback');
+        display_result($res, 'feedback answers', 'feedback');
     } else {
         display_no_result('feedback answers', 'feedback');
     }
@@ -247,7 +247,7 @@ if ($can_edit) {
 // File names.
 /*$res = search_filenames($search, $course->id);
 if ($res) {
-    display_result_links($res, 'file titles', 'files');
+    display_result($res, 'file titles', 'files');
 } else {
     display_no_result('file titles', 'files');
 }*/
@@ -257,7 +257,7 @@ if ($res) {
 // Folder names.
 $res = search_folder_names($search, $course->id);
 if ($res) {
-    display_result_links($res, 'folder names', 'folder');
+    display_result($res, 'folder names', 'folder');
 } else {
     display_no_result('folder names', 'folder');
 }
@@ -267,7 +267,7 @@ if ($res) {
 // Forum titles.
 $res = search_forum_titles($search, $course->id);
 if ($res) {
-    display_result_links($res, 'forum titles', 'forum');
+    display_result($res, 'forum titles', 'forum');
 } else {
     display_no_result('forum titles', 'forum');
 }
@@ -275,7 +275,7 @@ if ($res) {
 // Forum discussions.
 $res = search_forum_discussions($search, $course->id);
 if ($res) {
-    display_result_links($res, 'forum discussions', 'forum');
+    display_result($res, 'forum discussions', 'forum');
 } else {
     display_no_result('forum discussions', 'forum');
 }
@@ -283,7 +283,7 @@ if ($res) {
 // Forum posts.
 $res = search_forum_posts($search, $course->id);
 if ($res) {
-    display_result_links($res, 'forum posts', 'forum');
+    display_result($res, 'forum posts', 'forum');
 } else {
     display_no_result('forum posts', 'forum');
 }
@@ -293,7 +293,7 @@ if ($res) {
 // Glossary titles.
 $res = search_glossary_titles($search, $course->id);
 if ($res) {
-    display_result_links($res, 'glossaries', 'glossary');
+    display_result($res, 'glossaries', 'glossary');
 } else {
     display_no_result('glossaries', 'glossary');
 }
@@ -301,7 +301,7 @@ if ($res) {
 // Glossary entries.
 $res = search_glossary_entries($search, $course->id);
 if ($res) {
-    display_result_links($res, 'glossary entries', 'glossary');
+    display_result($res, 'glossary entries', 'glossary');
 } else {
     display_no_result('glossary entries', 'glossary');
 }
@@ -312,7 +312,7 @@ if ($res) {
 $res = search_labels($search, $course->id);
 if ($res) {
     // Label mod has no icon.
-    display_result_links($res, 'labels');
+    display_result($res, 'labels');
 } else {
     display_no_result('labels');
 }
@@ -322,7 +322,7 @@ if ($res) {
 // Lesson titles.
 $res = search_lesson_titles($search, $course->id);
 if ($res) {
-    display_result_links($res, 'lesson titles', 'lesson');
+    display_result($res, 'lesson titles', 'lesson');
 } else {
     display_no_result('lesson titles', 'lesson');
 }
@@ -330,7 +330,7 @@ if ($res) {
 // Lesson pages.
 $res = search_lesson_pages($search, $course->id);
 if ($res) {
-    display_result_links($res, 'lesson pages', 'lesson');
+    display_result($res, 'lesson pages', 'lesson');
 } else {
     display_no_result('lesson pages', 'lesson');
 }
@@ -339,7 +339,7 @@ if ($res) {
 /*
 $res = search_lesson_answers($search, $course->id);
 if ($res) {
-    display_result_links($res, 'lesson answers', 'lesson');
+    display_result($res, 'lesson answers', 'lesson');
 } else {
     display_no_result('lesson answers', 'lesson');
 }
@@ -350,7 +350,7 @@ if ($res) {
 // Page titles.
 $res = search_page_titles($search, $course->id);
 if ($res) {
-    display_result_links($res, 'page titles', 'page');
+    display_result($res, 'page titles', 'page');
 } else {
     display_no_result('page titles', 'page');
 }
@@ -358,7 +358,7 @@ if ($res) {
 // Page content.
 $res = search_page_content($search, $course->id);
 if ($res) {
-    display_result_links($res, 'page content', 'page');
+    display_result($res, 'page content', 'page');
 } else {
     display_no_result('page content', 'page');
 }
@@ -368,7 +368,7 @@ if ($res) {
 // URL titles.
 $res = search_url_titles($search, $course->id);
 if ($res) {
-    display_result_links($res, 'URL titles', 'url');
+    display_result($res, 'URL titles', 'url');
 } else {
     display_no_result('URL titles', 'url');
 }
@@ -376,7 +376,7 @@ if ($res) {
 // URLs.
 $res = search_urls($search, $course->id);
 if ($res) {
-    display_result_links($res, 'URLs', 'url');
+    display_result($res, 'URLs', 'url');
 } else {
     display_no_result('URLs', 'url');
 }
@@ -386,7 +386,7 @@ if ($res) {
 // Wiki titles.
 $res = search_wiki_titles($search, $course->id);
 if ($res) {
-    display_result_links($res, 'wiki titles', 'wiki');
+    display_result($res, 'wiki titles', 'wiki');
 } else {
     display_no_result('wiki titles', 'wiki');
 }
@@ -394,7 +394,7 @@ if ($res) {
 // Wiki pages.
 $res = search_wiki_pages($search, $course->id);
 if ($res) {
-    display_result_links($res, 'wiki pages', 'wiki');
+    display_result($res, 'wiki pages', 'wiki');
 } else {
     display_no_result('wiki pages', 'wiki');
 }
@@ -402,7 +402,7 @@ if ($res) {
 // Wiki versions (history).
 $res = search_wiki_versions($search, $course->id);
 if ($res) {
-    display_result_links($res, 'wiki versions', 'wiki');
+    display_result($res, 'wiki versions', 'wiki');
 } else {
     display_no_result('wiki versions', 'wiki');
 }
