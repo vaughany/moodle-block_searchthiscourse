@@ -52,7 +52,6 @@ function clean_search_terms($words, $len=2) {
     return trim(implode(' ', $searchterms));
 }
 
-
 /**
  * This function shortens content to a more usable length.
  * @param string $content       String to trim
@@ -79,11 +78,11 @@ function prepare_content($content) {
     return $content;
 }
 
-
 /*
  * Regular use function for displaying the results of searches in a nice way.
  * @param object $res       Database result object.
  * @param string $title     Text snippet of the searched area.
+ * @param string $module    Name of the module to produce the same image.
  */
 function display_result($results, $title, $module = null) {
     global $CFG, $OUTPUT;
@@ -242,6 +241,7 @@ function search_forum_posts($search, $cid) {
             AND ".$CFG->prefix."forum_discussions.forum = ".$CFG->prefix."forum.id
             AND ".$CFG->prefix."forum_discussions.course = '$cid'
             AND (".$CFG->prefix."forum_posts.subject LIKE '%$search%' OR ".$CFG->prefix."forum_posts.message LIKE '%$search%');";
+
     $res = $DB->get_records_sql($sql);
 
     $ret = array();
@@ -251,9 +251,7 @@ function search_forum_posts($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$row->discussion.'#p'.$row->pid.'">'.$row->subject."</a>\n";
-                // $ret[] = html_writer::link(new moodle_url('/mod/forum/discuss.php', array('d' => $row->discussion, '#p' => $row->id)), $row->subject);
-                // tried using html_writer::link here but it can't handle the # on the end.
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/forum/discuss.php?d='.$row->discussion.'#p'.$row->pid.'">'.$row->subject."</a></span>\n";
             }
         }
 
@@ -330,7 +328,7 @@ function search_glossary_entries($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept.'</a> '.prepare_content($row->definition)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept.'</a> '.prepare_content($row->definition)."</span>\n";
             }
         }
 
@@ -375,7 +373,7 @@ function search_labels($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section-1).'">Search term found in a <em>hidden</em> label in section '.($row->section-1)."</a>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section-1).'">Search term found in a <em>hidden</em> label in section '.($row->section-1)."</a></span>\n";
             }
         }
 
@@ -418,7 +416,7 @@ function search_checklist_titles($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/checklist/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/checklist/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."</span>\n";
             }
         }
     }
@@ -459,7 +457,7 @@ function search_url_titles($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."</span>\n";
             }
         }
     }
@@ -495,11 +493,11 @@ function search_urls($search, $cid) {
     $ret = array();
     foreach ($res as $row) {
         if (instance_is_visible('url', $row)) {
-            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a> <a href="'.$row->externalurl.'">'.$row->externalurl."</a>\n";
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a> - <a href="'.$row->externalurl.'">'.$row->externalurl."</a>\n";
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a> <a href="'.$row->externalurl.'">'.$row->externalurl."</a>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a> - <a href="'.$row->externalurl.'">'.$row->externalurl."</a></span>\n";
             }
         }
     }
@@ -540,7 +538,7 @@ function search_page_titles($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."</span>\n";
             }
         }
     }
@@ -581,7 +579,7 @@ function search_page_content($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->content)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->content)."</span>\n";
             }
         }
     }
@@ -622,7 +620,7 @@ function search_filenames($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: (<a href="'.$row->externalurl.'">'.$row->externalurl."</a>)\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: (<a href="'.$row->externalurl.'">'.$row->externalurl."</a>)</span>\n";
             }
         }
     }
@@ -663,7 +661,7 @@ function search_book_titles($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."</span>\n";
             }
         }
     }
@@ -705,7 +703,7 @@ function search_book_content($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'&chapterid='.$row->id.'"> '.$row->title.'</a> '.prepare_content($row->content)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'&chapterid='.$row->id.'"> '.$row->title.'</a> '.prepare_content($row->content)."</span>\n";
             }
         }
     }
@@ -746,7 +744,7 @@ function search_assignment_titles($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/assignment/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/assignment/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."</span>\n";
             }
         }
     }
@@ -784,13 +782,11 @@ function search_assignment_submission($search, $cid) {
     foreach ($res as $row) {
 
         if (instance_is_visible('assignment', $row)) {
-            // $ret[] = '<a href="'.$CFG->wwwroot.'/mod/assignment/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: ('.$summary.")\n";
-            // http://172.21.4.85/sdcmoodle2/mod/assignment/type/online/file.php?id=75&userid=3
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/assignment/type/online/file.php?id='.$row->cmid.'&userid='.$row->uid.'"> '.$row->name.'</a> '.prepare_content($row->data1)."\n";
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/assignment/type/online/file.php?id='.$row->cmid.'&userid='.$row->uid.'"> '.$row->name.'</a> '.prepare_content($row->data1)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/assignment/type/online/file.php?id='.$row->cmid.'&userid='.$row->uid.'"> '.$row->name.'</a> '.prepare_content($row->data1)."</span>\n";
             }
         }
     }
@@ -831,7 +827,7 @@ function search_folder_names($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/folder/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/folder/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."</span>\n";
             }
         }
     }
@@ -872,7 +868,7 @@ function search_feedback_titles($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/feedback/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/feedback/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."</span>\n";
             }
         }
     }
@@ -913,7 +909,7 @@ function search_feedback_questions($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/feedback/edit.php?id='.$row->cmid.'"> '.$row->fname.'</a> '.prepare_content($row->name)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/feedback/edit.php?id='.$row->cmid.'"> '.$row->fname.'</a> '.prepare_content($row->name)."</span>\n";
             }
         }
     }
@@ -955,7 +951,7 @@ function search_feedback_answers($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/feedback/analysis.php?id='.$row->cmid.'"> '.$row->value.'</a> '.prepare_content($row->name)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/feedback/analysis.php?id='.$row->cmid.'"> '.$row->value.'</a> '.prepare_content($row->name)."</span>\n";
             }
         }
     }
@@ -996,7 +992,7 @@ function search_chat_titles($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/chat/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."\n";
+                $ret[] = '<span  class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/chat/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."</span>\n";
             }
         }
     }
@@ -1082,7 +1078,7 @@ function search_choice_titles($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/choice/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/choice/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."</span>\n";
             }
         }
     }
@@ -1123,7 +1119,7 @@ function search_choice_options($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/course/mod.php?sesskey='.$USER->sesskey.'&sr=1&update='.$row->cmid.'"> '.strip_tags($row->text).'</a> '.prepare_content($row->name)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/course/mod.php?sesskey='.$USER->sesskey.'&sr=1&update='.$row->cmid.'"> '.strip_tags($row->text).'</a> '.prepare_content($row->name)."</span>\n";
             }
         }
     }
@@ -1164,7 +1160,7 @@ function search_lesson_titles($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/lesson/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->name)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/lesson/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->name)."</span>\n";
             }
         }
     }
@@ -1205,7 +1201,7 @@ function search_lesson_pages($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/lesson/view.php?id='.$row->cmid.'&pageid='.$row->id.'">'.$row->title.'</a> '.prepare_content($row->name)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/lesson/view.php?id='.$row->cmid.'&pageid='.$row->id.'">'.$row->title.'</a> '.prepare_content($row->name)."</span>\n";
             }
         }
     }
@@ -1246,7 +1242,7 @@ function search_wiki_titles($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/wiki/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->firstpagetitle)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/wiki/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->firstpagetitle)."</span>\n";
             }
         }
     }
@@ -1287,7 +1283,7 @@ function search_wiki_pages($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/wiki/view.php?pageid='.$row->id.'"> '.$row->title.'</a> '.prepare_content($row->name)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/wiki/view.php?pageid='.$row->id.'"> '.$row->title.'</a> '.prepare_content($row->name)."</span>\n";
             }
         }
     }
@@ -1329,7 +1325,7 @@ function search_wiki_versions($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/wiki/history.php?pageid='.$row->pid.'"> '.strip_tags($row->content).'</a> '.prepare_content($row->title)."\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/wiki/history.php?pageid='.$row->pid.'"> '.strip_tags($row->content).'</a> '.prepare_content($row->title)."</span>\n";
             }
         }
     }
@@ -1369,7 +1365,7 @@ function search_data_titles($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'"> '.$row->name."</a>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'"> '.$row->name."</a></span>\n";
             }
         }
     }
@@ -1410,7 +1406,7 @@ function search_data_fields($search, $cid) {
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<a class="dimmed_text" href="'.$CFG->wwwroot.'/mod/data/field.php?d='.$row->id.'"> '.$row->dfname.'</a> <a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.prepare_content($row->name)."</a>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/data/field.php?d='.$row->id.'"> '.$row->dfname.'</a> <a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.prepare_content($row->name)."</a></span>\n";
             }
         }
     }
@@ -1469,20 +1465,68 @@ function search_data_content($search, $cid) {
 function search_course_names($search, $cid) {
     global $CFG, $DB, $can_edit;
 
-    //if (!check_plugin_visible('data')) {
-    //    return false;
-    //}
-
     $res = $DB->get_records_select('course', "id = '$cid' AND (fullname LIKE '%$search%' OR shortname LIKE '%$search%' OR idnumber LIKE '%$search%')", array('id, fullname, shortname, visible'));
 
     $ret = array();
     foreach ($res as $row) {
         if ($row->visible) {
-            $ret[] = html_writer::link(new moodle_url('/course/view.php', array('id' => $row->id)), $row->shortname);
+            $ret[] = $row->fullname.' '.prepare_content($row->shortname)."\n";
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = html_writer::link(new moodle_url('/course/view.php', array('id' => $row->id)), $row->shortname, array('class' => 'dimmed_text'));
+                $ret[] = '<span class="dimmed_text">'.$row->fullname.' '.prepare_content($row->shortname)."</span>\n";
+            }
+        }
+    }
+    return $ret;
+}
+
+/*
+ * Search course summary for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_course_summary($search, $cid) {
+    global $CFG, $DB, $can_edit;
+
+    $res = $DB->get_records_select('course', "id = '$cid' AND summary LIKE '%$search%'", array('id, fullname, shortname, visible'));
+
+    $ret = array();
+    foreach ($res as $row) {
+        if ($row->visible) {
+                $ret[] = $row->fullname.' '.prepare_content($row->summary)."\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<span class="dimmed_text">'.$row->fullname.' '.prepare_content($row->summary)."</span>\n";
+            }
+        }
+    }
+    return $ret;
+}
+
+/*
+ * Search course section names for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_course_section_names($search, $cid) {
+    global $CFG, $DB, $can_edit;
+
+    $res = $DB->get_records_select('course_sections', "course = '$cid' AND name LIKE '%$search%'", array('section, name, visible'));
+
+    $ret = array();
+    foreach ($res as $row) {
+        if ($row->visible) {
+                $ret[] = '<a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section).'">Section '.($row->section).'</a> '.prepare_content($row->name)."\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section).'">Section '.($row->section).'</a> '.prepare_content($row->name)."</span>\n";
             }
         }
     }
@@ -1518,19 +1562,14 @@ function search_course_names($search, $cid) {
 
 
 
-
-
-
-
-
-require_once($CFG->libdir . '/formslib.php');
+//require_once($CFG->libdir . '/formslib.php');
 /**
  * Settings form for the code checker.
  *
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class block_searchthiscourse_form extends moodleform {
+/*class block_searchthiscourse_form extends moodleform {
 
     protected function definition() {
         // global $path;
@@ -1547,3 +1586,4 @@ class block_searchthiscourse_form extends moodleform {
         $mform->addElement('submit', 'submitbutton', get_string('pluginname', 'block_searchthiscourse').'!');
     }
 }
+*/

@@ -168,7 +168,7 @@ if ($res) {
 
 // Course //////////////////////////////////////////////////////////////////////////////////////////
 
-// Course names.
+// Course name.
 $res = search_course_names($search, $course->id);
 if ($res) {
     display_result($res, 'course names', null);
@@ -177,12 +177,20 @@ if ($res) {
 }
 
 // Course summary.
-//$res = search_choice_options($search, $course->id);
-//if ($res) {
-//    display_result($res, 'choice options', 'choice');
-//} else {
-//    display_no_result('choice options', 'choice');
-//}
+$res = search_course_summary($search, $course->id);
+if ($res) {
+    display_result($res, 'course summary', null);
+} else {
+    display_no_result('course summary', null);
+}
+
+// Course section names.
+$res = search_course_section_names($search, $course->id);
+if ($res) {
+    display_result($res, 'course topic titles', null);
+} else {
+    display_no_result('course topic titles', null);
+}
 
 // Database ////////////////////////////////////////////////////////////////////////////////////////
 
