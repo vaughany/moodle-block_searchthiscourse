@@ -19,7 +19,7 @@
  *
  * Chunks of code used from local/codechecker and mod/forum.
  *
- * @package    block
+ * @package    blocks
  * @subpackage searchthiscourse
  * @copyright  2012 Paul Vaughan, paulvaughan@southdevon.ac.uk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -29,6 +29,7 @@ defined('MOODLE_INTERNAL') || die;
 $can_edit   = has_capability('moodle/course:update', get_context_instance(CONTEXT_COURSE, $COURSE->id));
 
 // Some functions summarise the content they get from the database to this number of characters.
+// TODO: user-configurable option.
 $summary_length = 75;
 
 /**
@@ -40,13 +41,11 @@ $summary_length = 75;
  * @param string $prefix    String to prepend to the each token taken out of $words
  * @returns array
  */
-function clean_search_terms($words, $len=2) {
+function clean_search_terms($words, $len = 2) {
     $searchterms = explode(' ', $words);
     foreach ($searchterms as $key => $searchterm) {
         if (strlen($searchterm) < $len) {
             unset($searchterms[$key]);
-            // } else if ($prefix) {
-            // $searchterms[$key] = $prefix.$searchterm;
         }
     }
     return trim(implode(' ', $searchterms));
@@ -63,18 +62,15 @@ function prepare_content($content, $prettify = true) {
     // Strip HTML out and tidy up.
     $content = trim(strip_tags($content));
 
+    // Shorten if too long.
     if (strlen($content) > $summary_length) {
-        // Strip tags, get the slice of the string, trim the result, add dots.
         $content =  substr($content, 0, $summary_length).'...';
     }
 
-    // If we're prettifying as well as trinning and tidying.
+    // We're prettifying as well as trimming and tidying.
     if ($prettify) {
-        // nice quotes, inner content italic
+        // Nice quotes, inner content italic.
         $content = '&ldquo;<em>'.$content.'</em>&rdquo;';
-
-        // nice quotes, all grey
-        //$content = '<span style="color:#777;">&ldquo;'.$content.'&rdquo;</span>';
     }
 
     return $content;
@@ -89,6 +85,7 @@ function prepare_content($content, $prettify = true) {
 function display_result($results, $title, $module = null) {
     global $CFG, $OUTPUT;
 
+    // For a single result, use bullets. For two or more results, use numbers.
     $listtype = (count($results) > 1) ? 'ol' : 'ul';
 
     if ($module) {
@@ -98,13 +95,12 @@ function display_result($results, $title, $module = null) {
         $img = '<img src="'.$CFG->wwwroot.'/theme/image.php?theme='.$CFG->theme.'&image=c%2Fcourse" alt="'.$module.'" title="'.$module.'" /> ';
     }
 
-    echo '<p>'.$img.'Found the following <strong>'.ucfirst($title).'</strong>:</p>'."\n<$listtype>\n";
+    echo '<p>'.$img.get_string('found', 'block_searchthiscourse').'<strong>'.ucfirst($title).'</strong>:</p>'."\n<$listtype>\n";
     foreach ($results as $result) {
         echo "<li>$result</li>\n";
     }
     echo "</$listtype>\n";
 }
-
 
 /*
  * Regular use function for displaying the lack of search results.
@@ -368,14 +364,16 @@ function search_labels($search, $cid) {
     $ret = array();
     foreach ($res as $row) {
 
+// TODO: Format of hidden result is different to format of visible result.
+
         // Check each instance's visibility. Use only if visible.
         // Or, have results returned for teachers showing hidden elements, much like the course proper.
         if (instance_is_visible('label', $row)) {
-            $ret[] = 'Search term found in a label in <a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section-1).'">section '.($row->section-1)."</a>\n";
+            $ret[] = get_string('foundlabel', 'block_searchthiscourse').'<a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section-1).'">section '.($row->section-1)."</a>\n";
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section-1).'">Search term found in a <em>hidden</em> label in section '.($row->section-1)."</a></span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section-1).'">'.get_string('foundhiddenlabel', 'block_searchthiscourse').($row->section-1)."</a></span>\n";
             }
         }
 
@@ -1035,11 +1033,11 @@ function search_chat_entries($search, $cid) {
     foreach ($res as $row) {
 
         if (instance_is_visible('chat', $row)) {
-            $ret[] = '<a href="'.$CFG->wwwroot.'/user/profile.php?id='.$row->uid.'">'.$row->firstname.' '.$row->lastname.'</a> wrote <a href="'.$CFG->wwwroot.'/mod/chat/report.php?id='.$row->cmid.'"> '.prepare_content($row->message).'</a> in <a href="'.$CFG->wwwroot.'/mod/chat/view.php?id='.$row->cmid.'"> '.$row->name."</a>\n";
+            $ret[] = '<a href="'.$CFG->wwwroot.'/user/profile.php?id='.$row->uid.'">'.$row->firstname.' '.$row->lastname.'</a>'.get_string('wrote', 'block_searchthiscourse').'<a href="'.$CFG->wwwroot.'/mod/chat/report.php?id='.$row->cmid.'"> '.prepare_content($row->message).'</a>'.get_string('in', 'block_searchthiscourse').'<a href="'.$CFG->wwwroot.'/mod/chat/view.php?id='.$row->cmid.'"> '.$row->name."</a>\n";
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/user/profile.php?id='.$row->uid.'">'.$row->firstname.' '.$row->lastname.'</a> wrote <a href="'.$CFG->wwwroot.'/mod/chat/report.php?id='.$row->cmid.'"> '.prepare_content($row->message).'</a> in <a href="'.$CFG->wwwroot.'/mod/chat/view.php?id='.$row->cmid.'"> '.$row->name."</a></span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/user/profile.php?id='.$row->uid.'">'.$row->firstname.' '.$row->lastname.'</a>'.get_string('wrote', 'block_searchthiscourse').'<a href="'.$CFG->wwwroot.'/mod/chat/report.php?id='.$row->cmid.'"> '.prepare_content($row->message).'</a>'.get_string('in', 'block_searchthiscourse').'<a href="'.$CFG->wwwroot.'/mod/chat/view.php?id='.$row->cmid.'"> '.$row->name."</a></span>\n";
             }
         }
 
@@ -1524,11 +1522,11 @@ function search_course_section_names($search, $cid) {
     $ret = array();
     foreach ($res as $row) {
         if ($row->visible) {
-                $ret[] = '<a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section).'">Section '.($row->section).'</a> '.prepare_content($row->name)."\n";
+                $ret[] = '<a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section).'">'.get_string('section', 'block_searchthiscourse').($row->section).'</a> '.prepare_content($row->name)."\n";
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section).'">Section '.($row->section).'</a> '.prepare_content($row->name)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section).'">'.get_string('section', 'block_searchthiscourse').($row->section).'</a> '.prepare_content($row->name)."</span>\n";
             }
         }
     }

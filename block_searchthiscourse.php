@@ -50,32 +50,17 @@ class block_searchthiscourse extends block_base {
             return $this->content;
         }
 
-        $advancedsearch = get_string('advancedsearch', 'block_searchthiscourse');
-
-        $strsearch  = get_string('search');
-        $strgo      = get_string('go');
-
-        $this->content->text  = 'Enter keyword/s:';
+        $this->content->text  = get_string('enterkeyword', 'block_searchthiscourse');
         $this->content->text .= '<div class="searchform">';
-        $this->content->text .= '<form action="'.$CFG->wwwroot.'/blocks/searchthiscourse/search.php" style="display:inline"><fieldset class="invisiblefieldset">';
-        $this->content->text .= '<input name="id" type="hidden" value="'.$this->page->course->id.'" />';  // course
-        $this->content->text .= '<label class="accesshide" for="searchform_search">'.$strsearch.'</label>'.
-                                '<input id="searchform_search" name="search" type="text" size="16" />';
-        $this->content->text .= '<button id="searchform_button" type="submit" title="'.$strsearch.'">'.$strgo.'</button><br />';
-        // $this->content->text .= '<a href="'.$CFG->wwwroot.'/blocks/searchthiscourse/search.php?id='.$this->page->course->id.'">'.$advancedsearch.'</a>';
-        // $this->content->text .= $OUTPUT->help_icon('search');
-        $this->content->text .= '</fieldset></form></div>';
-
-        /*
-        $mform = new block_searchthiscourse_form(new moodle_url('/blocks/searchthiscourse/'));
-        // $mform->set_data((object) array('path' => $path));
-        if ($data = $mform->get_data()) {
-            //redirect(new moodle_url('/blocks/searchthiscourse/', array('path' => $data->path)));
-            redirect(new moodle_url('/blocks/searchthiscourse/'));
-        }
-        // $this->content->text .= $mform;
-        $this->content->text .= $mform->display();
-        */
+        $this->content->text .= '  <form action="'.$CFG->wwwroot.'/blocks/searchthiscourse/search.php" style="display:inline">';
+        $this->content->text .= '    <fieldset class="invisiblefieldset">';
+        $this->content->text .= '      <input name="id" type="hidden" value="'.$this->page->course->id.'" />';
+        $this->content->text .= '      <label class="accesshide" for="searchform_search">'.get_string('search').'</label>';
+        $this->content->text .= '      <input id="searchform_search" name="search" type="text" size="16" />';
+        $this->content->text .= '      <button id="searchform_button" type="submit" title="'.get_string('search').'">'.get_string('go').'</button><br />';
+        $this->content->text .= '    </fieldset>';
+        $this->content->text .= '  </form>';
+        $this->content->text .= '</div>';
 
         return $this->content;
     }
@@ -87,5 +72,3 @@ class block_searchthiscourse extends block_base {
         );
     }
 }
-
-
