@@ -57,7 +57,7 @@ function clean_search_terms($words, $len=2) {
  * @param string $content       String to trim
  * @returns string
  */
-function prepare_content($content) {
+function prepare_content($content, $prettify = true) {
     global $summary_length;
 
     // Strip HTML out and tidy up.
@@ -68,12 +68,14 @@ function prepare_content($content) {
         $content =  substr($content, 0, $summary_length).'...';
     }
 
-    // nice quotes, all grey
-    //$content = '<span style="color:#777;">&ldquo;'.$content.'&rdquo;</span>';
+    // If we're prettifying as well as trinning and tidying.
+    if ($prettify) {
+        // nice quotes, inner content italic
+        $content = '&ldquo;<em>'.$content.'</em>&rdquo;';
 
-    // nice quotes, inner content italic
-    $content = '&ldquo;<em>'.$content.'</em>&rdquo;';
-
+        // nice quotes, all grey
+        //$content = '<span style="color:#777;">&ldquo;'.$content.'&rdquo;</span>';
+    }
 
     return $content;
 }
@@ -1533,57 +1535,88 @@ function search_course_section_names($search, $cid) {
     return $ret;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//require_once($CFG->libdir . '/formslib.php');
-/**
- * Settings form for the code checker.
+/*
+ * Search slideshow names for the keyword
  *
- * @copyright  2011 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
  */
-/*class block_searchthiscourse_form extends moodleform {
+function search_slideshow_names($search, $cid) {
+    global $CFG, $DB, $can_edit;
 
-    protected function definition() {
-        // global $path;
-        $mform = $this->_form;
-
-        $a = new stdClass();
-        // $a->link = html_writer::link('http://docs.moodle.org/en/Development:Coding_style',
-        //        get_string('moodlecodingguidelines', 'local_codechecker'));
-        // $a->path = html_writer::tag('tt', 'local/codechecker');
-        $mform->addElement('static', '', '', get_string('info', 'block_searchthiscourse', $a));
-
-        $mform->addElement('text', 'path', get_string('path', 'block_searchthiscourse'));
-
-        $mform->addElement('submit', 'submitbutton', get_string('pluginname', 'block_searchthiscourse').'!');
+    if (!check_plugin_visible('slideshow')) {
+        return false;
     }
+
+    $sql = "SELECT ".$CFG->prefix."slideshow.id, ".$CFG->prefix."slideshow.name, ".$CFG->prefix."slideshow.course,
+                ".$CFG->prefix."course_modules.section, ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."slideshow, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."slideshow.course = ".$CFG->prefix."course_modules.course
+            AND ".$CFG->prefix."slideshow.name LIKE '%$search%'
+            AND ".$CFG->prefix."modules.name = 'slideshow'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."slideshow.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+
+        if (instance_is_visible('slideshow', $row)) {
+                $ret[] = '<a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->name, false)."</a>\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->name, false)."</a>\n";
+            }
+        }
+    }
+    return $ret;
 }
-*/
+
+/*
+ * Search slideshow captions for the keyword
+ *
+ * @param string $search    Search word or phrase.
+ * @param int $cid          Course ID.
+ * @returns array
+ */
+function search_slideshow_captions($search, $cid) {
+    global $CFG, $DB, $can_edit;
+
+    if (!check_plugin_visible('slideshow')) {
+        return false;
+    }
+
+    $sql = "SELECT ".$CFG->prefix."slideshow_captions.id, ".$CFG->prefix."slideshow_captions.title, ".$CFG->prefix."slideshow_captions.caption, ".$CFG->prefix."slideshow.course, ".$CFG->prefix."slideshow.id AS sid,
+                ".$CFG->prefix."course_modules.section, ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."slideshow_captions, ".$CFG->prefix."slideshow, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+            WHERE ".$CFG->prefix."slideshow.course = ".$CFG->prefix."course_modules.course
+            AND ".$CFG->prefix."slideshow_captions.slideshow = ".$CFG->prefix."slideshow.id
+            AND (".$CFG->prefix."slideshow_captions.title LIKE '%$search%' or ".$CFG->prefix."slideshow_captions.caption LIKE '%$search%')
+            AND ".$CFG->prefix."modules.name = 'slideshow'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."slideshow.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
+    $res = $DB->get_records_sql($sql);
+
+    $ret = array();
+    foreach ($res as $row) {
+
+        // module.course module.id
+        $instance_data = new object();
+        $instance_data->course  = $row->course;
+        $instance_data->id      = $row->sid;
+
+        if (instance_is_visible('slideshow', $instance_data)) {
+                $ret[] = '<a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->title, false).'</a> '.prepare_content($row->caption)."\n";
+        } else {
+            // Show hidden items only if the user has the required capability.
+            if ($can_edit) {
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->title, false).'</a> '.prepare_content($row->caption)."</span>\n";
+            }
+        }
+    }
+    return $ret;
+}

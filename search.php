@@ -99,9 +99,9 @@ if ($can_edit) {
 
 // Book. ///////////////////////////////////////////////////////////////////////////////////////////
 
-// Book titles.
 // For non-core modules (as of 2.2) we check for installation first, then plugin visibility.
 if (check_plugin_installed('book')) {
+    // Book titles.
     $res = search_book_titles($search, $course->id);
     if ($res) {
         display_result($res, 'book titles', 'book');
@@ -371,6 +371,26 @@ if ($res) {
     display_no_result('page content', 'page');
 }
 
+// Slideshow. //////////////////////////////////////////////////////////////////////////////////////
+
+if (check_plugin_installed('slideshow')) {
+    // Slideshow name.
+    $res = search_slideshow_names($search, $course->id);
+    if ($res) {
+        display_result($res, 'slideshow names', 'slideshow');
+    } else {
+        display_no_result('slideshow names', 'slideshow');
+    }
+
+    // Slideshow captions.
+    $res = search_slideshow_captions($search, $course->id);
+    if ($res) {
+        display_result($res, 'slideshow captions', 'slideshow');
+    } else {
+        display_no_result('slideshow captions', 'slideshow');
+    }
+}
+
 // URLs. ///////////////////////////////////////////////////////////////////////////////////////////
 
 // URL titles.
@@ -414,18 +434,5 @@ if ($res) {
 } else {
     display_no_result('wiki versions', 'wiki');
 }
-
-
-
-
-
-
-
-
-
-
-// $sections = get_all_sections($id);
-// print_object($sections);
-// print_object($CFG->theme);
 
 echo $OUTPUT->footer();
