@@ -85,7 +85,7 @@ Currently it will search the current course in the following places:
 
 ### Does not yet search through these *core* Moodle areas:
 
-* User description / custom fields
+* User descriptions / custom fields
 
 ### Searches through these *third-party* plugins:
 
@@ -93,6 +93,9 @@ Currently it will search the current course in the following places:
     * titles
     * content
 * Checklist
+* Slideshow
+    * names
+    * captions
 
 ### Does not yet search through these *third-party* plugins:
 
@@ -103,7 +106,6 @@ Currently it will search the current course in the following places:
 * OU wiki           15
 * Realtime Quiz     -
 * Scheduler         57
-* Slideshow         153
 
 Note that these plugins are on this list only because these are the third party plugins already in use by South Devon College. There are many more plugins, we just don't use them all. :)
 
