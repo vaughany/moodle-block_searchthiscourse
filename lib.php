@@ -208,6 +208,9 @@ function search_forum_discussions($search, $cid) {
 
     $ret = array();
     foreach ($res as $row) {
+
+// TODO: rewritwe this into a proper SQL query so we can get "mdl_forum.id AS fid" back.
+
         if (instance_is_visible('forum', $row)) {
             $ret[] = html_writer::link(new moodle_url('/mod/forum/discuss.php', array('d' => $row->id)), $row->name);
         } else {
@@ -304,8 +307,8 @@ function search_glossary_entries($search, $cid) {
     }
 
     // TODO: This gets the user to the glossary, but not the specific entry
-    // TODO: Strip HTML from the returned fields.
 
+/*
     $sql = "SELECT ".$CFG->prefix."glossary_entries.id, glossaryid, concept, ".$CFG->prefix."course_modules.id AS cmid,
                 ".$CFG->prefix."glossary.course, ".$CFG->prefix."glossary_entries.definition
             FROM ".$CFG->prefix."glossary_entries, ".$CFG->prefix."glossary, ".$CFG->prefix."modules, ".$CFG->prefix."course_modules
@@ -315,6 +318,18 @@ function search_glossary_entries($search, $cid) {
             AND ".$CFG->prefix."modules.name = 'glossary'
             AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
             AND ".$CFG->prefix."course_modules.course = ".$CFG->prefix."glossary.course;";
+*/
+
+    $sql = "SELECT ".$CFG->prefix."glossary_entries.id, glossaryid, concept, ".$CFG->prefix."glossary.course, ".$CFG->prefix."glossary_entries.definition,
+                ".$CFG->prefix."course_modules.section, ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+            FROM ".$CFG->prefix."glossary, ".$CFG->prefix."glossary_entries, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
+
+            WHERE ".$CFG->prefix."glossary.course = ".$CFG->prefix."course_modules.course
+            AND (".$CFG->prefix."glossary_entries.concept LIKE '%$search%' OR ".$CFG->prefix."glossary_entries.definition LIKE '%$search%')
+            AND ".$CFG->prefix."modules.name = 'glossary'
+            AND ".$CFG->prefix."modules.id = ".$CFG->prefix."course_modules.module
+            AND ".$CFG->prefix."glossary.id = ".$CFG->prefix."course_modules.instance
+            AND ".$CFG->prefix."course_modules.course = '".$cid."';";
 
     $res = $DB->get_records_sql($sql);
 
@@ -322,7 +337,7 @@ function search_glossary_entries($search, $cid) {
     foreach ($res as $row) {
 
         if (instance_is_visible('label', $row)) {
-            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept.'</a> '.prepare_content($row->definition)."\n";
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod//view.php?id='.$row->cmid.'"> '.$row->concept.'</a> '.prepare_content($row->definition)."\n";
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
@@ -765,7 +780,7 @@ function search_assignment_submission($search, $cid) {
         return false;
     }
 
-    $sql = "SELECT ".$CFG->prefix."assignment_submissions.id, ".$CFG->prefix."assignment.name, ".$CFG->prefix."assignment_submissions.data1, ".$CFG->prefix."course_modules.section,
+    $sql = "SELECT ".$CFG->prefix."assignment_submissions.id, ".$CFG->prefix."assignment.name, ".$CFG->prefix."assignment.id AS aid, ".$CFG->prefix."assignment_submissions.data1, ".$CFG->prefix."course_modules.section,
                 ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid, ".$CFG->prefix."assignment_submissions.userid AS uid
             FROM ".$CFG->prefix."assignment, ".$CFG->prefix."assignment_submissions, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."assignment.course = ".$CFG->prefix."course_modules.course
@@ -781,7 +796,12 @@ function search_assignment_submission($search, $cid) {
     $ret = array();
     foreach ($res as $row) {
 
-        if (instance_is_visible('assignment', $row)) {
+        // module.course module.id
+        $instance_data = new object();
+        $instance_data->course  = $row->course;
+        $instance_data->id      = $row->aid;
+
+        if (instance_is_visible('assignment', $instance_data)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/assignment/type/online/file.php?id='.$row->cmid.'&userid='.$row->uid.'"> '.$row->name.'</a> '.prepare_content($row->data1)."\n";
         } else {
             // Show hidden items only if the user has the required capability.
@@ -889,7 +909,7 @@ function search_feedback_questions($search, $cid) {
         return false;
     }
 
-    $sql = "SELECT ".$CFG->prefix."feedback_item.id, ".$CFG->prefix."feedback.name, ".$CFG->prefix."feedback_item.name AS fname,
+    $sql = "SELECT ".$CFG->prefix."feedback_item.id, ".$CFG->prefix."feedback.name, ".$CFG->prefix."feedback.id AS fid, ".$CFG->prefix."feedback_item.name AS fname,
                 ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
             FROM ".$CFG->prefix."feedback, ".$CFG->prefix."feedback_item, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."feedback.course = ".$CFG->prefix."course_modules.course
@@ -904,7 +924,13 @@ function search_feedback_questions($search, $cid) {
 
     $ret = array();
     foreach ($res as $row) {
-        if (instance_is_visible('feedback', $row)) {
+
+        // module.course module.id
+        $instance_data = new object();
+        $instance_data->course  = $row->course;
+        $instance_data->id      = $row->fid;
+
+        if (instance_is_visible('feedback', $instance_data)) {
                 $ret[] = '<a href="'.$CFG->wwwroot.'/mod/feedback/edit.php?id='.$row->cmid.'"> '.$row->fname.'</a> '.prepare_content($row->name)."\n";
         } else {
             // Show hidden items only if the user has the required capability.
@@ -1013,7 +1039,7 @@ function search_chat_entries($search, $cid) {
         return false;
     }
 
-    $sql = "SELECT ".$CFG->prefix."chat_messages.id, ".$CFG->prefix."chat_messages.chatid, message, ".$CFG->prefix."chat.name, ".$CFG->prefix."course_modules.section,
+    $sql = "SELECT ".$CFG->prefix."chat_messages.id, ".$CFG->prefix."chat_messages.chatid, message, ".$CFG->prefix."chat.name, ".$CFG->prefix."chat.id AS cid, ".$CFG->prefix."course_modules.section,
                 ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid,
                 ".$CFG->prefix."user.firstname, ".$CFG->prefix."user.lastname, ".$CFG->prefix."user.id AS uid
             FROM ".$CFG->prefix."chat, ".$CFG->prefix."chat_messages, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules, ".$CFG->prefix."user
@@ -1032,7 +1058,12 @@ function search_chat_entries($search, $cid) {
     $ret = array();
     foreach ($res as $row) {
 
-        if (instance_is_visible('chat', $row)) {
+        // module.course module.id
+        $instance_data = new object();
+        $instance_data->course  = $row->course;
+        $instance_data->id      = $row->cid;
+
+        if (instance_is_visible('chat', $instance_data)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/user/profile.php?id='.$row->uid.'">'.$row->firstname.' '.$row->lastname.'</a>'.get_string('wrote', 'block_searchthiscourse').'<a href="'.$CFG->wwwroot.'/mod/chat/report.php?id='.$row->cmid.'"> '.prepare_content($row->message).'</a>'.get_string('in', 'block_searchthiscourse').'<a href="'.$CFG->wwwroot.'/mod/chat/view.php?id='.$row->cmid.'"> '.$row->name."</a>\n";
         } else {
             // Show hidden items only if the user has the required capability.
