@@ -1589,7 +1589,8 @@ function search_slideshow_captions($search, $cid) {
         return false;
     }
 
-    $sql = "SELECT ".$CFG->prefix."slideshow_captions.id, ".$CFG->prefix."slideshow_captions.title, ".$CFG->prefix."slideshow_captions.caption, ".$CFG->prefix."slideshow.course, ".$CFG->prefix."slideshow.id AS sid,
+    $sql = "SELECT ".$CFG->prefix."slideshow_captions.id, ".$CFG->prefix."slideshow_captions.title, ".$CFG->prefix."slideshow_captions.caption,
+                ".$CFG->prefix."slideshow.course, ".$CFG->prefix."slideshow.name AS sname, ".$CFG->prefix."slideshow.id AS sid,
                 ".$CFG->prefix."course_modules.section, ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
             FROM ".$CFG->prefix."slideshow_captions, ".$CFG->prefix."slideshow, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."slideshow.course = ".$CFG->prefix."course_modules.course
@@ -1610,11 +1611,11 @@ function search_slideshow_captions($search, $cid) {
         $instance_data->id      = $row->sid;
 
         if (instance_is_visible('slideshow', $instance_data)) {
-                $ret[] = '<a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->title, false).'</a> '.prepare_content($row->caption)."\n";
+                $ret[] = '<a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->title, false).'</a> '.prepare_content($row->caption).' in <a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->sname, false)."</a>\n";
         } else {
             // Show hidden items only if the user has the required capability.
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->title, false).'</a> '.prepare_content($row->caption)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->title, false).'</a> '.prepare_content($row->caption).' in <a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->sname, false)."</a></span>\n";
             }
         }
     }
