@@ -24,9 +24,9 @@
  */
 
 $plugin->version        = 2012061100;                   // The current plugin version (Date: YYYYMMDDXX).
-//$plugin->requires       = 2010112400;                   // Moodle 2.0: http://docs.moodle.org/dev/Moodle_versions
+$plugin->requires       = 2010112400;                   // Moodle 2.0: http://docs.moodle.org/dev/Moodle_versions
 //$plugin->requires       = 2011070100;                   // Moodle 2.1.
-$plugin->requires       = 2011120500;                   // Moodle 2.2.
+//$plugin->requires       = 2011120500;                   // Moodle 2.2.
 $plugin->component      = 'block_searchthiscourse';     // Full name of the plugin (used for diagnostics).
 $plugin->cron           = 0;                            // Period for cron to check this plugin (secs).
 $plugin->maturity       = MATURITY_BETA;

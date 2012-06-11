@@ -23,8 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname']       = 'SearchThisCourse';
-//$string['advancedsearch']   = 'Advanced Search';
+$string['pluginname']           = 'SearchThisCourse';
 
 // ./search.php
 $string['strapline']            = 'Note that if any results are found in hidden resouces, they will <span class="dimmed_text">appear greyed out</span>, and are only visible to those users with course editing rights.';

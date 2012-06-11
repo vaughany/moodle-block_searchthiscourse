@@ -90,7 +90,8 @@ if ($can_edit) {
 
 // Book. ///////////////////////////////////////////////////////////////////////////////////////////
 
-// For non-core modules (as of 2.2) we check for installation first, then plugin visibility.
+// For non-core modules, we check for installation first, then plugin visibility.
+// The Book module is a 3rd party module for 2.0-2.2, but has beem moved into core for 2.3.
 if (check_plugin_installed('book')) {
     // Book titles.
     $res = search_book_titles($search, $course->id);

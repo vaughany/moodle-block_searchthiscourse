@@ -1,6 +1,6 @@
-# SearchThisCourse block for Moodle 2.2
+# SearchThisCourse block for Moodle 2
 
-Deep-searches through a whole course for a keyword.
+Deep-searches through a whole course for a keyword or phrase.
 
 ## Introduction
 
@@ -8,7 +8,7 @@ We have global searches and course searches and forum searches and a host of oth
 
 ## Licence
 
-SearchThisCourse block for Moodle 2.2, copyright &copy; 2012, Paul Vaughan.
+SearchThisCourse block for Moodle 2, copyright &copy; 2012, Paul Vaughan.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
@@ -99,13 +99,13 @@ Currently it will search the current course in the following places:
 
 ### Does not yet search through these *third-party* plugins:
 
-* Certificate       14
-* HotPot            90
-* Journal           1
-* OU blog           3
-* OU wiki           15
-* Realtime Quiz     -
-* Scheduler         57
+* Certificate
+* HotPot
+* Journal
+* OU blog
+* OU wiki
+* Realtime Quiz
+* Scheduler
 
 Note that these plugins are on this list only because these are the third party plugins already in use by South Devon College. There are many more plugins, we just don't use them all. :)
 
@@ -125,7 +125,7 @@ Download the archive and extract the files, or [clone the repository from GitHub
     |-- readme.md
     |-- search.php
     |-- styles.css
-    `-- version.php
+    -- version.php
 
 Copy the 'searchthiscourse' folder into your Moodle installation's **blocks** folder.
 
@@ -145,13 +145,13 @@ This block has none at this time.
 
 ## Known Issues
 
-This block has none at this time, aside the core and third-party plugins not yet added to the search.
+This block has none at this time, aside the third-party plugins not yet added to the search.
 
 Should you find a bug, have an issue, feature request or new language pack, please [log an issue in the tracker](https://github.com/vaughany/moodle-block_searchthiscourse/issues) or fork the repo, fix the problem and submit a pull request.
 
 ## To do
 
-* Lots, at this time.
+There is a list of *issues* (problems as well as improvements) [on GitHub](https://github.com/vaughany/moodle-block_searchthiscourse/issues). This list will be addressed as time and necessity dictates. Bugs will always be given top priority.
 
 ## Acknowledgements
 
