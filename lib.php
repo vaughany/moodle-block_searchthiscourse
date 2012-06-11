@@ -1463,10 +1463,10 @@ function search_data_content($search, $cid) {
         $instance_data->id      = $row->did;
 
         if (instance_is_visible('data', $instance_data)) {
-            $ret[] = strip_tags($row->content).' <a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.prepare_content($row->name)."</a>\n";
+            $ret[] = prepare_content($row->content, false).' <a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.prepare_content($row->name)."</a>\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text">'.strip_tags($row->content).' <a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.prepare_content($row->name)."</a></span>\n";
+                $ret[] = '<span class="dimmed_text">'.prepare_content($row->content, false).' <a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.prepare_content($row->name)."</a></span>\n";
             }
         }
     }
