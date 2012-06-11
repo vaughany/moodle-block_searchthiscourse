@@ -59,21 +59,27 @@ function clean_search_terms($words, $len = 2) {
 function prepare_content($content, $prettify = true) {
     global $summary_length;
 
-    // Strip HTML out and tidy up.
-    $content = trim(strip_tags($content));
+    // If the string's empty, bypass the processing.
+    if (!empty($content)) {
 
-    // Shorten if too long.
-    if (strlen($content) > $summary_length) {
-        $content =  substr($content, 0, $summary_length).'...';
-    }
+        // Strip HTML out and tidy up.
+        $content = trim(strip_tags($content));
 
-    // We're prettifying as well as trimming and tidying.
-    if ($prettify) {
-        // Nice quotes, inner content italic.
-        $content = '&ldquo;<em>'.$content.'</em>&rdquo;';
+        // Shorten if too long.
+        if (strlen($content) > $summary_length) {
+            $content =  substr($content, 0, $summary_length).'...';
+        }
+
+        // We're prettifying as well as trimming and tidying.
+        if ($prettify) {
+            // Nice quotes, inner content italic.
+            $content = '&ldquo;<em>'.$content.'</em>&rdquo;';
+        }
+
     }
 
     return $content;
+
 }
 
 /*
