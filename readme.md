@@ -4,7 +4,7 @@ Deep-searches through a whole course for a keyword or phrase.
 
 ## Introduction
 
-We have global searches and course searches and forum searches and a host of other search options, but what we don't have is the ability to search exactly one whole, entire course and all that course's plugin instances for a keyword (or keywords). This is known as 'deep searching'.
+We have global searches, course searches, forum searches and a host of other search options, but what we don't have is the ability to search exactly one entire course and all that course's plugin instances for a keyword (or keywords). The SearchThisCourse block aims to rectify this.
 
 ## Licence
 
@@ -18,16 +18,18 @@ You should have received a copy of the GNU General Public License along with thi
 
 ## Purpose
 
-Being able to type any keyword of your choice and search for it whether it exists in a Label, Forum post, Book chapter, Page or any core Moodle activity is something we don't often need to do, but have had no way of doing. Until now.
+Being able to type any keyword of your choice and search for it whether it exists in a Label, Forum post, Book chapter, Page or any core Moodle activity is something we don't often need to do, but we have had no way of doing it. Until now.
+
+**Deep linking** is the process of creating a link to a post (for example), or a specific comment on a specific post, on a website, rather than linking to the website's front page. **Deep searching** is the same principle applied to searching: being able to search just one course for a keyword or phrase and locating all the places that keyword or phrase exists, and linking directly to them.
 
 Currently it will search the current course in the following places:
 
-### *Standard* Moodle 2.2 modules:
+### *Standard* Moodle 2 modules:
 
 * Assignment
     * titles
     * submissions (*teachers only*)
-* Book (core module in 2.3, but a third-party plugin for 2.2)
+* Book (core plugin in Moodle 2.3, but a third-party plugin for 2.0, 2.1 and 2.2)
 * Chat
     * titles
     * messages (*teachers only*)
@@ -65,15 +67,15 @@ Currently it will search the current course in the following places:
     * pages
     * versions (the history of page edits)
 
-### Does not yet search through these *standard* Moodle 2.2 modules:
+### Does not yet search through these *standard* Moodle 2 modules:
 
-* File          42816
-* Quiz          579
-* Resource      -
-* Survey        1
-* Workshop      -
+* File
+* Quiz
+* Resource
+* Survey
+* Workshop
 
-### Probably will never search through these *standard* Moodle 2.2 modules:
+### Probably will never search through these *standard* Moodle 2 modules:
 
 * IMS content package
 * LTI
@@ -85,7 +87,7 @@ Currently it will search the current course in the following places:
 
 ### Does not yet search through these *core* Moodle areas:
 
-* User descriptions / custom fields
+* User descriptions / custom fields (users enrolled in the current course)
 
 ### Searches through these *third-party* plugins:
 
@@ -107,9 +109,19 @@ Currently it will search the current course in the following places:
 * Realtime Quiz
 * Scheduler
 
-Note that these plugins are on this list only because these are the third party plugins already in use by South Devon College. There are many more plugins, we just don't use them all. :)
+> **Note:** These plugins are on this list only because these are the third party plugins already in use by South Devon College, my employer. There are many more plugins available which we could search through, we just don't use them all. :)
 
-If you'd like to request a new plugin be searched by this plugin, [raise an isue on GitHub](https://github.com/vaughany/moodle-block_searchthiscourse/issues) and I will see what I can do.  Alternatively, fork the repository, fix the problem and submit a pull request.
+If you'd like to request a new plugin be searched by this plugin, [raise an issue on GitHub](https://github.com/vaughany/moodle-block_searchthiscourse/issues) and I will see what I can do.  Alternatively, fork the repository, fix the problem and submit a pull request.
+
+## How It Works
+
+Most of Moodle's content is stored in the database. The SearchThisCourse plugin is aware of where the data is stored for each plugin listed above (core and some third-party) and searches those locations. The results returned show or summarise the data and provide a link specifically to that location if one exists (not always possible, depending on the plugin, in which case the link gets close), as well as realted links: if a forum post is found to contain the keyword, links to the post and the discussion are provided.
+
+The SearchThisCourse plugin is aware of hidden resources, and will only show search results from hidden resources if the user has the capability `moodle/course:update` (given to the *Teacher* role as default), and will show these results in the same manner as they appear on your course (usually greyed out).
+
+Some results (as labelled, above) are only ever shown to Teachers (or more correctly, those with the correct capability) as they may give too much information away (e.g. Feedback answers).
+
+> **Note:** Data not in the database (for example, the contents of uploaded files, or SCORM resources) cannot be searched for using this block.
 
 ## Installation
 
@@ -125,7 +137,7 @@ Download the archive and extract the files, or [clone the repository from GitHub
     |-- readme.md
     |-- search.php
     |-- styles.css
-    -- version.php
+    `-- version.php
 
 Copy the 'searchthiscourse' folder into your Moodle installation's **blocks** folder.
 
