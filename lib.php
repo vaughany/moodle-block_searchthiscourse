@@ -1096,7 +1096,7 @@ function search_choice_options($search, $cid) {
         return false;
     }
 
-    $sql = "SELECT ".$CFG->prefix."choice_options.id, ".$CFG->prefix."choice.id, ".$CFG->prefix."choice.name, text, ".$CFG->prefix."choice.intro, ".$CFG->prefix."course_modules.section,
+    $sql = "SELECT ".$CFG->prefix."choice_options.id, ".$CFG->prefix."choice.id AS cid, ".$CFG->prefix."choice.name, text, ".$CFG->prefix."choice.intro, ".$CFG->prefix."course_modules.section,
                 ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
             FROM ".$CFG->prefix."choice, ".$CFG->prefix."choice_options, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."choice.course = ".$CFG->prefix."course_modules.course
@@ -1111,7 +1111,12 @@ function search_choice_options($search, $cid) {
 
     $ret = array();
     foreach ($res as $row) {
-        if (instance_is_visible('choice', $row)) {
+
+        $instance_data = new object();
+        $instance_data->course  = $row->course;
+        $instance_data->id      = $row->cid;
+
+        if (instance_is_visible('choice', $instance_data)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/course/mod.php?sesskey='.$USER->sesskey.'&sr=1&update='.$row->cmid.'"> '.strip_tags($row->text).'</a> '.prepare_content($row->name)."\n";
         } else {
             if ($can_edit) {
@@ -1391,7 +1396,7 @@ function search_data_fields($search, $cid) {
         return false;
     }
 
-    $sql = "SELECT ".$CFG->prefix."data.id, ".$CFG->prefix."data.name, ".$CFG->prefix."data_fields.name AS dfname,
+    $sql = "SELECT ".$CFG->prefix."data_fields.id, ".$CFG->prefix."data.name, ".$CFG->prefix."data_fields.name AS dfname, ".$CFG->prefix."data.id AS did,
                 ".$CFG->prefix."course_modules.section, ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
             FROM ".$CFG->prefix."data, ".$CFG->prefix."data_fields, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."data.course = ".$CFG->prefix."course_modules.course
@@ -1406,7 +1411,12 @@ function search_data_fields($search, $cid) {
 
     $ret = array();
     foreach ($res as $row) {
-        if (instance_is_visible('data', $row)) {
+
+        $instance_data = new object();
+        $instance_data->course  = $row->course;
+        $instance_data->id      = $row->did;
+
+        if (instance_is_visible('data', $instance_data)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/data/field.php?d='.$row->id.'"> '.$row->dfname.'</a> <a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.prepare_content($row->name)."</a>\n";
         } else {
             if ($can_edit) {
@@ -1431,7 +1441,7 @@ function search_data_content($search, $cid) {
         return false;
     }
 
-    $sql = "SELECT ".$CFG->prefix."data_content.id, ".$CFG->prefix."data.id AS did, ".$CFG->prefix."data.name, content,
+    $sql = "SELECT ".$CFG->prefix."data_content.id, ".$CFG->prefix."data.id AS did, ".$CFG->prefix."data.name, content, ".$CFG->prefix."data.id AS did,
                 ".$CFG->prefix."course_modules.section, ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
             FROM ".$CFG->prefix."data, ".$CFG->prefix."data_content, ".$CFG->prefix."data_fields, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."data.course = ".$CFG->prefix."course_modules.course
@@ -1447,7 +1457,12 @@ function search_data_content($search, $cid) {
 
     $ret = array();
     foreach ($res as $row) {
-        if (instance_is_visible('data', $row)) {
+
+        $instance_data = new object();
+        $instance_data->course  = $row->course;
+        $instance_data->id      = $row->did;
+
+        if (instance_is_visible('data', $instance_data)) {
             $ret[] = strip_tags($row->content).' <a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.prepare_content($row->name)."</a>\n";
         } else {
             if ($can_edit) {
