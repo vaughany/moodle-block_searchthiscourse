@@ -62,8 +62,9 @@ $PAGE->set_heading($course->fullname);
 // Do some nice output.
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('searchresults', 'block_searchthiscourse'));
+echo '<p>'.get_string('strapline', 'block_searchthiscourse')."</p>\n";
 if ($can_edit) {
-    echo get_string('strapline', 'block_searchthiscourse');
+    echo '<p>'.get_string('explanation', 'block_searchthiscourse')."</p>\n";
 }
 echo html_writer::tag('hr', null);
 
