@@ -27,7 +27,7 @@ $string['pluginname']           = 'SearchThisCourse';
 
 // ./search.php
 $string['strapline']            = 'The deep-search results are as follows.';
-$string['explanation']            = 'Note that if any results are found in hidden resouces, they will <span class="dimmed_text">appear greyed out</span> and are only visible to those users with course editing rights.';
+$string['explanation']            = 'Note that if any results are found in hidden resouces, they will <span class="dimmed_text">appear greyed out</span> and are only visible to those users with course editing capability (<code>moodle/course:update</code>).';
 $string['searchresults']        = $string['pluginname'].' results';
 $string['assignment_title']     = 'assignment titles';
 $string['assignment_content']   = 'assignment content';
