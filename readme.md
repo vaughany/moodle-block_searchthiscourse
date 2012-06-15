@@ -131,6 +131,7 @@ Download the archive and extract the files, or [clone the repository from GitHub
 
     searchthiscourse/
     |-- block_searchthiscourse.php
+    |-- gpl.txt
     |-- lang
     |   `-- en
     |       `-- block_searchthiscourse.php
