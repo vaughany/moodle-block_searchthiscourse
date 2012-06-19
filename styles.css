@@ -11,3 +11,6 @@
 .block_searchthiscourse .invisiblefieldset {
     display: block;
 }
+.block_searchthiscourse p {
+    margin-bottom: 0;
+}

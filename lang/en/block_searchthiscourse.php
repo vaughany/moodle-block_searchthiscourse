@@ -79,3 +79,4 @@ $string['section']              = 'Section ';
 
 // ./block_searchthiscourse.php
 $string['enterkeyword']         = 'Enter keyword/s:';
+$string['min3chars']            = '(minimum of 3 characters)';

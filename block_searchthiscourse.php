@@ -50,13 +50,14 @@ class block_searchthiscourse extends block_base {
             return $this->content;
         }
 
-        $this->content->text  = get_string('enterkeyword', 'block_searchthiscourse');
+        $this->content->text  = '<p>'.get_string('enterkeyword', 'block_searchthiscourse').'</p>';
         $this->content->text .= '<div class="searchform">';
         $this->content->text .= '  <form action="'.$CFG->wwwroot.'/blocks/searchthiscourse/search.php" style="display:inline">';
         $this->content->text .= '    <fieldset class="invisiblefieldset">';
         $this->content->text .= '      <input name="id" type="hidden" value="'.$this->page->course->id.'" />';
         $this->content->text .= '      <label class="accesshide" for="searchform_search">'.get_string('search').'</label>';
         $this->content->text .= '      <input id="searchform_search" name="search" type="text" size="16" />';
+        $this->content->text .= '      <p>'.get_string('min3chars', 'block_searchthiscourse').'</p>';
         $this->content->text .= '      <button id="searchform_button" type="submit" title="'.get_string('search').'">'.get_string('go').'</button><br />';
         $this->content->text .= '    </fieldset>';
         $this->content->text .= '  </form>';

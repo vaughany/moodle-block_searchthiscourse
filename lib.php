@@ -44,7 +44,7 @@ $summary_length = 75;
 function clean_search_terms($words, $len = 2) {
     $searchterms = explode(' ', $words);
     foreach ($searchterms as $key => $searchterm) {
-        if (strlen($searchterm) < $len) {
+        if (strlen($searchterm) <= $len) {
             unset($searchterms[$key]);
         }
     }

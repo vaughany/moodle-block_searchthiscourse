@@ -47,6 +47,9 @@ require_course_login($course);
 
 // Make obvious adjustments to the search terms
 $search = clean_search_terms($search);
+if (!$search) {
+    redirect(new moodle_url('/course/view.php', array('id' => $id)));
+}
 
 // Log use of the block.
 add_to_log($course->id, 'searchthiscourse', 'search', 'search.php?id='.$course->id.'&amp;search='.urlencode($search), $search);
