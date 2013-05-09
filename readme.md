@@ -115,7 +115,7 @@ If you'd like to request a new plugin be searched by this plugin, [raise an issu
 
 ## How It Works
 
-Most of Moodle's content is stored in the database. The SearchThisCourse plugin is aware of where the data is stored for each plugin listed above (core and some third-party) and searches those locations. The results returned show or summarise the data and provide a link specifically to that location if one exists (not always possible, depending on the plugin, in which case the link gets close), as well as realted links: if a forum post is found to contain the keyword, links to the post and the discussion are provided.
+Most of Moodle's content is stored in the database. The SearchThisCourse plugin is aware of where the data is stored for each plugin listed above (core and some third-party) and searches those locations. The results returned show or summarise the data and provide a link specifically to that location if one exists (not always possible, depending on the plugin, in which case the link gets close), as well as related links: if a forum post is found to contain the keyword, links to the post and the discussion are provided.
 
 The SearchThisCourse plugin is aware of hidden resources, and will only show search results from hidden resources if the user has the capability `moodle/course:update` (given to the *Teacher* role as default), and will show these results in the same manner as they appear on your course (usually greyed out).
 
