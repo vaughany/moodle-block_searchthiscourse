@@ -137,11 +137,13 @@ if ($can_edit) {
 // Checklists. /////////////////////////////////////////////////////////////////////////////////////
 
 // Checklist titles.
-$res = search_checklist_titles($search, $course->id);
-if ($res) {
-    display_result($res, get_string('checklist_titles', 'block_searchthiscourse'), 'checklist');
-} else {
-    display_no_result(get_string('checklist_titles', 'block_searchthiscourse'), 'checklist');
+if (check_plugin_installed('checklist')) {
+    $res = search_checklist_titles($search, $course->id);
+    if ($res) {
+        display_result($res, get_string('checklist_titles', 'block_searchthiscourse'), 'checklist');
+    } else {
+        display_no_result(get_string('checklist_titles', 'block_searchthiscourse'), 'checklist');
+    }
 }
 
 // Choice //////////////////////////////////////////////////////////////////////////////////////////
