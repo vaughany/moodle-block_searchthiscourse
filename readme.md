@@ -123,6 +123,10 @@ Some results (as labelled, above) are only ever shown to Teachers (or more corre
 
 > **Note:** Data not in the database (for example, the contents of uploaded files, or SCORM resources) cannot be searched for using this block.
 
+## Requirements
+
+At this time, Moodle 2.0 (build 2010112400) or greater, although 2.0 and 2.1 are no longer supported and you should probably be using a newer, supported version ([more info about Moodle versions here](http://docs.moodle.org/dev/Releases)).
+
 ## Installation
 
 Installation is a matter of copying files to the correct location within your Moodle installation, but it is always wise to test new plugins in a sandbox environment first, and have the ability to roll back changes.
