@@ -28,8 +28,8 @@
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 
-$id         = required_param('id', PARAM_INT);                          // course id
-$search     = trim(required_param('search', PARAM_NOTAGS));             // search string
+$id         = required_param('id', PARAM_INT);                          // Course id.
+$search     = trim(required_param('search', PARAM_NOTAGS));             // Search string.
 $can_edit   = has_capability('moodle/course:update', get_context_instance(CONTEXT_COURSE, $COURSE->id));
 
 if (empty($search)) {
@@ -45,7 +45,7 @@ if (!$course = $DB->get_record('course', array('id' => $id))) {
 
 require_course_login($course);
 
-// Make obvious adjustments to the search terms
+// Make obvious adjustments to the search terms.
 $search = clean_search_terms($search);
 if (!$search) {
     redirect(new moodle_url('/course/view.php', array('id' => $id)));
@@ -55,7 +55,8 @@ if (!$search) {
 add_to_log($course->id, 'searchthiscourse', 'search', 'search.php?id='.$course->id.'&amp;search='.urlencode($search), $search);
 
 // Navigation elements.
-$PAGE->navbar->add(get_string('pluginname', 'block_searchthiscourse'), new moodle_url('/blocks/searchthiscourse/search.php', array('id' => $course->id)));
+$PAGE->navbar->add(get_string('pluginname', 'block_searchthiscourse'),
+    new moodle_url('/blocks/searchthiscourse/search.php', array('id' => $course->id)));
 $PAGE->navbar->add(s($search, true));
 
 // Nice page things.
@@ -71,7 +72,7 @@ if ($can_edit) {
 }
 echo html_writer::tag('hr', null);
 
-// Assignment. /////////////////////////////////////////////////////////////////////////////////////
+// Assignment.
 
 // Assignment titles.
 $res = search_assignment_titles($search, $course->id);
@@ -92,7 +93,7 @@ if ($can_edit) {
     }
 }
 
-// Book. ///////////////////////////////////////////////////////////////////////////////////////////
+// Book.
 
 // For non-core modules, we check for installation first, then plugin visibility.
 // The Book module is a 3rd party module for 2.0-2.2, but has beem moved into core for 2.3.
@@ -114,7 +115,7 @@ if (check_plugin_installed('book')) {
     }
 }
 
-// Chat ////////////////////////////////////////////////////////////////////////////////////////////
+// Chat.
 
 // Chat titles.
 $res = search_chat_titles($search, $course->id);
@@ -124,7 +125,7 @@ if ($res) {
     display_no_result(get_string('chat_titles', 'block_searchthiscourse'), 'chat');
 }
 
-// Chat entries
+// Chat entries.
 if ($can_edit) {
     $res = search_chat_entries($search, $course->id);
     if ($res) {
@@ -134,7 +135,7 @@ if ($can_edit) {
     }
 }
 
-// Checklists. /////////////////////////////////////////////////////////////////////////////////////
+// Checklists.
 
 // Checklist titles.
 if (check_plugin_installed('checklist')) {
@@ -146,7 +147,7 @@ if (check_plugin_installed('checklist')) {
     }
 }
 
-// Choice //////////////////////////////////////////////////////////////////////////////////////////
+// Choice.
 
 // Choice titles.
 $res = search_choice_titles($search, $course->id);
@@ -164,7 +165,7 @@ if ($res) {
     display_no_result(get_string('choice_options', 'block_searchthiscourse'), 'choice');
 }
 
-// Course //////////////////////////////////////////////////////////////////////////////////////////
+// Course.
 
 // Course name.
 $res = search_course_names($search, $course->id);
@@ -190,7 +191,7 @@ if ($res) {
     display_no_result(get_string('course_topic_titles', 'block_searchthiscourse'), null);
 }
 
-// Database ////////////////////////////////////////////////////////////////////////////////////////
+// Database.
 
 // Database titles.
 $res = search_data_titles($search, $course->id);
@@ -218,7 +219,7 @@ if ($res) {
     display_no_result(get_string('database_content', 'block_searchthiscourse'), 'data');
 }
 
-// Feedback. ///////////////////////////////////////////////////////////////////////////////////////
+// Feedback.
 
 // Feedback names.
 $res = search_feedback_titles($search, $course->id);
@@ -248,7 +249,7 @@ if ($can_edit) {
     }
 }
 
-// Files. //////////////////////////////////////////////////////////////////////////////////////////
+// Files.
 
 // File names.
 /*$res = search_filenames($search, $course->id);
@@ -258,7 +259,7 @@ if ($res) {
     display_no_result(get_string('file_titles', 'block_searchthiscourse'), 'files');
 }*/
 
-// Folder. /////////////////////////////////////////////////////////////////////////////////////////
+// Folder.
 
 // Folder names.
 $res = search_folder_names($search, $course->id);
@@ -268,7 +269,7 @@ if ($res) {
     display_no_result(get_string('folder_names', 'block_searchthiscourse'), 'folder');
 }
 
-// Forums. /////////////////////////////////////////////////////////////////////////////////////////
+// Forums.
 
 // Forum titles.
 $res = search_forum_titles($search, $course->id);
@@ -294,7 +295,7 @@ if ($res) {
     display_no_result(get_string('forum_posts', 'block_searchthiscourse'), 'forum');
 }
 
-// Glossaries //////////////////////////////////////////////////////////////////////////////////////
+// Glossaries.
 
 // Glossary titles.
 $res = search_glossary_titles($search, $course->id);
@@ -312,7 +313,7 @@ if ($res) {
     display_no_result(get_string('glossary_entries', 'block_searchthiscourse'), 'glossary');
 }
 
-// Labels //////////////////////////////////////////////////////////////////////////////////////////
+// Labels.
 
 // Labels.
 $res = search_labels($search, $course->id);
@@ -323,7 +324,7 @@ if ($res) {
     display_no_result(get_string('labels', 'block_searchthiscourse'));
 }
 
-// Lesson //////////////////////////////////////////////////////////////////////////////////////////
+// Lesson.
 
 // Lesson titles.
 $res = search_lesson_titles($search, $course->id);
@@ -351,7 +352,7 @@ if ($res) {
 }
 */
 
-// Pages. //////////////////////////////////////////////////////////////////////////////////////////
+// Pages.
 
 // Page titles.
 $res = search_page_titles($search, $course->id);
@@ -369,7 +370,7 @@ if ($res) {
     display_no_result(get_string('page_content', 'block_searchthiscourse'), 'page');
 }
 
-// Slideshow. //////////////////////////////////////////////////////////////////////////////////////
+// Slideshow.
 
 if (check_plugin_installed('slideshow')) {
     // Slideshow name.
@@ -389,7 +390,7 @@ if (check_plugin_installed('slideshow')) {
     }
 }
 
-// URLs. ///////////////////////////////////////////////////////////////////////////////////////////
+// URLs.
 
 // URL titles.
 $res = search_url_titles($search, $course->id);
@@ -407,7 +408,7 @@ if ($res) {
     display_no_result(get_string('urls', 'block_searchthiscourse'), 'url');
 }
 
-// Wiki ////////////////////////////////////////////////////////////////////////////////////////////
+// Wiki.
 
 // Wiki titles.
 $res = search_wiki_titles($search, $course->id);

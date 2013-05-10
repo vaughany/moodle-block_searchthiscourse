@@ -23,10 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$plugin->version        = 2013050900;                   // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version        = 2013051000;                   // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires       = 2010112400;                   // Moodle 2.0: http://docs.moodle.org/dev/Moodle_versions
-//$plugin->requires       = 2011070100;                   // Moodle 2.1.
-//$plugin->requires       = 2011120500;                   // Moodle 2.2.
+// $plugin->requires       = 2011070100;                   // Moodle 2.1.
+// $plugin->requires       = 2011120500;                   // Moodle 2.2.
 $plugin->component      = 'block_searchthiscourse';     // Full name of the plugin (used for diagnostics).
 $plugin->cron           = 0;                            // Period for cron to check this plugin (secs).
 $plugin->maturity       = MATURITY_BETA;

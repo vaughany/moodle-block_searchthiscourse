@@ -58,7 +58,8 @@ class block_searchthiscourse extends block_base {
         $this->content->text .= '      <label class="accesshide" for="searchform_search">'.get_string('search').'</label>';
         $this->content->text .= '      <input id="searchform_search" name="search" type="text" size="16" />';
         $this->content->text .= '      <p>'.get_string('min3chars', 'block_searchthiscourse').'</p>';
-        $this->content->text .= '      <button id="searchform_button" type="submit" title="'.get_string('search').'">'.get_string('go').'</button><br />';
+        $this->content->text .= '      <button id="searchform_button" type="submit" title="'.get_string('search').'">'.
+            get_string('go').'</button><br />';
         $this->content->text .= '    </fieldset>';
         $this->content->text .= '  </form>';
         $this->content->text .= '</div>';

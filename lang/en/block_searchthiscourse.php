@@ -25,7 +25,7 @@
 
 $string['pluginname']           = 'SearchThisCourse';
 
-// ./search.php
+// Search.
 $string['strapline']            = 'The deep-search results are as follows.';
 $string['explanation']            = 'Note that if any results are found in hidden resouces, they will <span class="dimmed_text">appear greyed out</span> and are only visible to those users with course editing capability (<code>moodle/course:update</code>).';
 $string['searchresults']        = $string['pluginname'].' results';
@@ -68,7 +68,7 @@ $string['wiki_titles']          = 'wiki titles';
 $string['wiki_pages']           = 'wiki pages';
 $string['wiki_versions']        = 'wiki versions';
 
-// ./lib.php
+// Lib.
 $string['found']                = 'Found the following ';
 $string['notfound']             = ': not found.';
 $string['foundlabel']           = 'Search term found in a label in ';
@@ -77,6 +77,6 @@ $string['wrote']                = ' wrote ';
 $string['in']                   = ' in ';
 $string['section']              = 'Section ';
 
-// ./block_searchthiscourse.php
+// Block_searchthiscourse.
 $string['enterkeyword']         = 'Enter keyword/s:';
 $string['min3chars']            = '(minimum of 3 characters)';

@@ -97,7 +97,6 @@ function display_result($results, $title, $module = null) {
     if ($module) {
         $img = '<img src="'.$CFG->wwwroot.'/theme/image.php?theme='.$CFG->theme.'&image=icon&component='.$module.'" alt="'.$module.'" title="'.$module.'" /> ';
     } else {
-        //$img = '';
         $img = '<img src="'.$CFG->wwwroot.'/theme/image.php?theme='.$CFG->theme.'&image=c%2Fcourse" alt="'.$module.'" title="'.$module.'" /> ';
     }
 
@@ -118,7 +117,6 @@ function display_no_result($title, $module = null) {
     if ($module) {
         $img = '<img src="'.$CFG->wwwroot.'/theme/image.php?theme='.$CFG->theme.'&image=icon&component='.$module.'" alt="'.$module.'" title="'.$module.'" /> ';
     } else {
-        //$img = '';
         $img = '<img src="'.$CFG->wwwroot.'/theme/image.php?theme='.$CFG->theme.'&image=c%2Fcourse" alt="'.$module.'" title="'.$module.'" /> ';
     }
 
@@ -313,7 +311,7 @@ function search_glossary_entries($search, $cid) {
         return false;
     }
 
-    // TODO: This gets the user to the glossary, but not the specific entry
+    // TODO: This gets the user to the glossary, but not the specific entry.
     $sql = "SELECT ".$CFG->prefix."glossary_entries.id, glossaryid, concept, ".$CFG->prefix."glossary.course, ".$CFG->prefix."glossary.id AS gid,
                 ".$CFG->prefix."glossary_entries.definition,
                 ".$CFG->prefix."course_modules.section, ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
@@ -339,7 +337,8 @@ function search_glossary_entries($search, $cid) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept.'</a> '.prepare_content($row->definition)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.$row->concept.'</a> '.prepare_content($row->definition)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/glossary/view.php?id='.$row->cmid.'"> '.
+                    $row->concept.'</a> '.prepare_content($row->definition)."</span>\n";
             }
         }
 
@@ -378,10 +377,12 @@ function search_labels($search, $cid) {
     foreach ($res as $row) {
 
         if (instance_is_visible('label', $row)) {
-            $ret[] = get_string('foundlabel', 'block_searchthiscourse').'<a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section-1).'">section '.($row->section-1)."</a>\n";
+            $ret[] = get_string('foundlabel', 'block_searchthiscourse').'<a href="'.$CFG->wwwroot.'/course/view.php?id='.
+                $cid.'#section-'.($row->section-1).'">section '.($row->section-1)."</a>\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section-1).'">'.get_string('foundhiddenlabel', 'block_searchthiscourse').($row->section-1)."</a></span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.
+                    ($row->section-1).'">'.get_string('foundhiddenlabel', 'block_searchthiscourse').($row->section-1)."</a></span>\n";
             }
         }
 
@@ -423,7 +424,8 @@ function search_checklist_titles($search, $cid) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/checklist/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/checklist/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/checklist/view.php?id='.$row->cmid.'"> '.
+                    $row->name.'</a> '.prepare_content($row->intro)."</span>\n";
             }
         }
     }
@@ -502,7 +504,8 @@ function search_urls($search, $cid) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a> - <a href="'.$row->externalurl.'">'.$row->externalurl."</a>\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a> - <a href="'.$row->externalurl.'">'.$row->externalurl."</a></span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.
+                    $row->name.'</a> - <a href="'.$row->externalurl.'">'.$row->externalurl."</a></span>\n";
             }
         }
     }
@@ -581,7 +584,8 @@ function search_page_content($search, $cid) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->content)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->content)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/page/view.php?id='.$row->cmid.'"> '.
+                    $row->name.'</a> '.prepare_content($row->content)."</span>\n";
             }
         }
     }
@@ -621,7 +625,8 @@ function search_filenames($search, $cid) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: (<a href="'.$row->externalurl.'">'.$row->externalurl."</a>)\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.$row->name.'</a>: (<a href="'.$row->externalurl.'">'.$row->externalurl."</a>)</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/url/view.php?id='.$row->cmid.'"> '.
+                    $row->name.'</a>: (<a href="'.$row->externalurl.'">'.$row->externalurl."</a>)</span>\n";
             }
         }
     }
@@ -702,7 +707,8 @@ function search_book_content($search, $cid) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'&chapterid='.$row->id.'"> '.$row->title.'</a> '.prepare_content($row->content)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'&chapterid='.$row->id.'"> '.$row->title.'</a> '.prepare_content($row->content)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/book/view.php?id='.$row->cmid.'&chapterid='.
+                    $row->id.'"> '.$row->title.'</a> '.prepare_content($row->content)."</span>\n";
             }
         }
     }
@@ -742,7 +748,8 @@ function search_assignment_titles($search, $cid) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/assignment/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/assignment/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/assignment/view.php?id='.$row->cmid.'"> '.
+                    $row->name.'</a> '.prepare_content($row->intro)."</span>\n";
             }
         }
     }
@@ -763,8 +770,10 @@ function search_assignment_submission($search, $cid) {
         return false;
     }
 
-    $sql = "SELECT ".$CFG->prefix."assignment_submissions.id, ".$CFG->prefix."assignment.name, ".$CFG->prefix."assignment.id AS aid, ".$CFG->prefix."assignment_submissions.data1, ".$CFG->prefix."course_modules.section,
-                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid, ".$CFG->prefix."assignment_submissions.userid AS uid
+    $sql = "SELECT ".$CFG->prefix."assignment_submissions.id, ".$CFG->prefix."assignment.name, ".$CFG->prefix."assignment.id AS aid,
+                ".$CFG->prefix."assignment_submissions.data1, ".$CFG->prefix."course_modules.section,
+                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid,
+                ".$CFG->prefix."assignment_submissions.userid AS uid
             FROM ".$CFG->prefix."assignment, ".$CFG->prefix."assignment_submissions, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."assignment.course = ".$CFG->prefix."course_modules.course
             AND (data1 LIKE '%$search%' OR data2 LIKE '%$search%' OR submissioncomment LIKE '%$search%')
@@ -784,10 +793,12 @@ function search_assignment_submission($search, $cid) {
         $instance_data->id      = $row->aid;
 
         if (instance_is_visible('assignment', $instance_data)) {
-            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/assignment/type/online/file.php?id='.$row->cmid.'&userid='.$row->uid.'"> '.$row->name.'</a> '.prepare_content($row->data1)."\n";
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/assignment/type/online/file.php?id='.$row->cmid.'&userid='.$row->uid.'"> '.
+                $row->name.'</a> '.prepare_content($row->data1)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/assignment/type/online/file.php?id='.$row->cmid.'&userid='.$row->uid.'"> '.$row->name.'</a> '.prepare_content($row->data1)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/assignment/type/online/file.php?id='.$row->cmid.
+                    '&userid='.$row->uid.'"> '.$row->name.'</a> '.prepare_content($row->data1)."</span>\n";
             }
         }
     }
@@ -827,7 +838,8 @@ function search_folder_names($search, $cid) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/folder/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/folder/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/folder/view.php?id='.$row->cmid.'"> '.
+                    $row->name.'</a> '.prepare_content($row->intro)."</span>\n";
             }
         }
     }
@@ -867,7 +879,8 @@ function search_feedback_titles($search, $cid) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/feedback/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/feedback/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/feedback/view.php?id='.$row->cmid.'"> '.
+                    $row->name.'</a> '.prepare_content($row->intro)."</span>\n";
             }
         }
     }
@@ -912,7 +925,8 @@ function search_feedback_questions($search, $cid) {
                 $ret[] = '<a href="'.$CFG->wwwroot.'/mod/feedback/edit.php?id='.$row->cmid.'"> '.$row->fname.'</a> '.prepare_content($row->name)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/feedback/edit.php?id='.$row->cmid.'"> '.$row->fname.'</a> '.prepare_content($row->name)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/feedback/edit.php?id='.$row->cmid.'"> '.
+                $row->fname.'</a> '.prepare_content($row->name)."</span>\n";
             }
         }
     }
@@ -953,7 +967,8 @@ function search_feedback_answers($search, $cid) {
                 $ret[] = '<a href="'.$CFG->wwwroot.'/mod/feedback/analysis.php?id='.$row->cmid.'"> '.$row->value.'</a> '.prepare_content($row->name)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/feedback/analysis.php?id='.$row->cmid.'"> '.$row->value.'</a> '.prepare_content($row->name)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/feedback/analysis.php?id='.$row->cmid.'"> '.
+                    $row->value.'</a> '.prepare_content($row->name)."</span>\n";
             }
         }
     }
@@ -1014,9 +1029,10 @@ function search_chat_entries($search, $cid) {
         return false;
     }
 
-    $sql = "SELECT ".$CFG->prefix."chat_messages.id, ".$CFG->prefix."chat_messages.chatid, message, ".$CFG->prefix."chat.name, ".$CFG->prefix."chat.id AS cid, ".$CFG->prefix."course_modules.section,
-                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid,
-                ".$CFG->prefix."user.firstname, ".$CFG->prefix."user.lastname, ".$CFG->prefix."user.id AS uid
+    $sql = "SELECT ".$CFG->prefix."chat_messages.id, ".$CFG->prefix."chat_messages.chatid, message, ".$CFG->prefix."chat.name,
+                ".$CFG->prefix."chat.id AS cid, ".$CFG->prefix."course_modules.section, ".$CFG->prefix."course_modules.course,
+                ".$CFG->prefix."course_modules.id AS cmid, ".$CFG->prefix."user.firstname, ".$CFG->prefix."user.lastname,
+                ".$CFG->prefix."user.id AS uid
             FROM ".$CFG->prefix."chat, ".$CFG->prefix."chat_messages, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules, ".$CFG->prefix."user
             WHERE ".$CFG->prefix."chat.id = ".$CFG->prefix."chat_messages.chatid
             AND message LIKE '%$search%'
@@ -1038,10 +1054,17 @@ function search_chat_entries($search, $cid) {
         $instance_data->id      = $row->cid;
 
         if (instance_is_visible('chat', $instance_data)) {
-            $ret[] = '<a href="'.$CFG->wwwroot.'/user/profile.php?id='.$row->uid.'">'.$row->firstname.' '.$row->lastname.'</a>'.get_string('wrote', 'block_searchthiscourse').'<a href="'.$CFG->wwwroot.'/mod/chat/report.php?id='.$row->cmid.'"> '.prepare_content($row->message).'</a>'.get_string('in', 'block_searchthiscourse').'<a href="'.$CFG->wwwroot.'/mod/chat/view.php?id='.$row->cmid.'"> '.$row->name."</a>\n";
+            $ret[] = '<a href="'.$CFG->wwwroot.'/user/profile.php?id='.$row->uid.'">'.$row->firstname.' '.$row->lastname.
+                '</a>'.get_string('wrote', 'block_searchthiscourse').'<a href="'.$CFG->wwwroot.'/mod/chat/report.php?id='.
+                $row->cmid.'"> '.prepare_content($row->message).'</a>'.get_string('in', 'block_searchthiscourse').
+                '<a href="'.$CFG->wwwroot.'/mod/chat/view.php?id='.$row->cmid.'"> '.$row->name."</a>\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/user/profile.php?id='.$row->uid.'">'.$row->firstname.' '.$row->lastname.'</a>'.get_string('wrote', 'block_searchthiscourse').'<a href="'.$CFG->wwwroot.'/mod/chat/report.php?id='.$row->cmid.'"> '.prepare_content($row->message).'</a>'.get_string('in', 'block_searchthiscourse').'<a href="'.$CFG->wwwroot.'/mod/chat/view.php?id='.$row->cmid.'"> '.$row->name."</a></span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/user/profile.php?id='.$row->uid.'">'.
+                    $row->firstname.' '.$row->lastname.'</a>'.get_string('wrote', 'block_searchthiscourse').'<a href="'.
+                    $CFG->wwwroot.'/mod/chat/report.php?id='.$row->cmid.'"> '.prepare_content($row->message).'</a>'.
+                    get_string('in', 'block_searchthiscourse').'<a href="'.$CFG->wwwroot.'/mod/chat/view.php?id='.
+                    $row->cmid.'"> '.$row->name."</a></span>\n";
             }
         }
 
@@ -1081,7 +1104,8 @@ function search_choice_titles($search, $cid) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/choice/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/choice/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->intro)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/choice/view.php?id='.$row->cmid.'"> '.
+                    $row->name.'</a> '.prepare_content($row->intro)."</span>\n";
             }
         }
     }
@@ -1102,8 +1126,9 @@ function search_choice_options($search, $cid) {
         return false;
     }
 
-    $sql = "SELECT ".$CFG->prefix."choice_options.id, ".$CFG->prefix."choice.id AS cid, ".$CFG->prefix."choice.name, text, ".$CFG->prefix."choice.intro, ".$CFG->prefix."course_modules.section,
-                ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
+    $sql = "SELECT ".$CFG->prefix."choice_options.id, ".$CFG->prefix."choice.id AS cid, ".$CFG->prefix."choice.name, text,
+                ".$CFG->prefix."choice.intro, ".$CFG->prefix."course_modules.section, ".$CFG->prefix."course_modules.course,
+                ".$CFG->prefix."course_modules.id AS cmid
             FROM ".$CFG->prefix."choice, ".$CFG->prefix."choice_options, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."choice.course = ".$CFG->prefix."course_modules.course
             AND ".$CFG->prefix."choice_options.choiceid = ".$CFG->prefix."choice.id
@@ -1123,10 +1148,12 @@ function search_choice_options($search, $cid) {
         $instance_data->id      = $row->cid;
 
         if (instance_is_visible('choice', $instance_data)) {
-            $ret[] = '<a href="'.$CFG->wwwroot.'/course/mod.php?sesskey='.$USER->sesskey.'&sr=1&update='.$row->cmid.'"> '.strip_tags($row->text).'</a> '.prepare_content($row->name)."\n";
+            $ret[] = '<a href="'.$CFG->wwwroot.'/course/mod.php?sesskey='.$USER->sesskey.'&sr=1&update='.$row->cmid.'"> '.
+                strip_tags($row->text).'</a> '.prepare_content($row->name)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/course/mod.php?sesskey='.$USER->sesskey.'&sr=1&update='.$row->cmid.'"> '.strip_tags($row->text).'</a> '.prepare_content($row->name)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/course/mod.php?sesskey='.$USER->sesskey.'
+                    &sr=1&update='.$row->cmid.'"> '.strip_tags($row->text).'</a> '.prepare_content($row->name)."</span>\n";
             }
         }
     }
@@ -1211,7 +1238,8 @@ function search_lesson_pages($search, $cid) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/lesson/view.php?id='.$row->cmid.'&pageid='.$row->id.'">'.$row->title.'</a> '.prepare_content($row->name)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/lesson/view.php?id='.$row->cmid.'&pageid='.$row->id.'">'.$row->title.'</a> '.prepare_content($row->name)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/lesson/view.php?id='.$row->cmid.'&pageid='.
+                    $row->id.'">'.$row->title.'</a> '.prepare_content($row->name)."</span>\n";
             }
         }
     }
@@ -1251,7 +1279,8 @@ function search_wiki_titles($search, $cid) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/wiki/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->firstpagetitle)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/wiki/view.php?id='.$row->cmid.'"> '.$row->name.'</a> '.prepare_content($row->firstpagetitle)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/wiki/view.php?id='.$row->cmid.'"> '.
+                    $row->name.'</a> '.prepare_content($row->firstpagetitle)."</span>\n";
             }
         }
     }
@@ -1296,7 +1325,8 @@ function search_wiki_pages($search, $cid) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/wiki/view.php?pageid='.$row->id.'"> '.$row->title.'</a> '.prepare_content($row->name)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/wiki/view.php?pageid='.$row->id.'"> '.$row->title.'</a> '.prepare_content($row->name)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/wiki/view.php?pageid='.$row->id.'"> '.
+                    $row->title.'</a> '.prepare_content($row->name)."</span>\n";
             }
         }
     }
@@ -1317,7 +1347,8 @@ function search_wiki_versions($search, $cid) {
         return false;
     }
 
-    $sql = "SELECT ".$CFG->prefix."wiki_versions.id, ".$CFG->prefix."wiki_pages.id AS pid, ".$CFG->prefix."wiki_versions.content, ".$CFG->prefix."wiki.name, title, cachedcontent, ".$CFG->prefix."course_modules.section,
+    $sql = "SELECT ".$CFG->prefix."wiki_versions.id, ".$CFG->prefix."wiki_pages.id AS pid, ".$CFG->prefix."wiki_versions.content,
+                ".$CFG->prefix."wiki.name, title, cachedcontent, ".$CFG->prefix."course_modules.section,
                 ".$CFG->prefix."wiki.id AS wid, ".$CFG->prefix."course_modules.course, ".$CFG->prefix."course_modules.id AS cmid
             FROM ".$CFG->prefix."wiki, ".$CFG->prefix."wiki_versions, ".$CFG->prefix."wiki_pages, ".$CFG->prefix."course_modules, ".$CFG->prefix."modules
             WHERE ".$CFG->prefix."wiki.course = ".$CFG->prefix."course_modules.course
@@ -1342,7 +1373,8 @@ function search_wiki_versions($search, $cid) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/mod/wiki/history.php?pageid='.$row->pid.'"> '.strip_tags($row->content).'</a> '.prepare_content($row->title)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/wiki/history.php?pageid='.$row->pid.'"> '.strip_tags($row->content).'</a> '.prepare_content($row->title)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/wiki/history.php?pageid='.$row->pid.'"> '.
+                    strip_tags($row->content).'</a> '.prepare_content($row->title)."</span>\n";
             }
         }
     }
@@ -1423,10 +1455,13 @@ function search_data_fields($search, $cid) {
         $instance_data->id      = $row->did;
 
         if (instance_is_visible('data', $instance_data)) {
-            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/data/field.php?d='.$row->id.'"> '.$row->dfname.'</a> <a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.prepare_content($row->name)."</a>\n";
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/data/field.php?d='.$row->id.'"> '.$row->dfname.'</a> <a href="'.
+                $CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.prepare_content($row->name)."</a>\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/data/field.php?d='.$row->id.'"> '.$row->dfname.'</a> <a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.prepare_content($row->name)."</a></span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/data/field.php?d='.$row->id.'"> '.
+                    $row->dfname.'</a> <a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.
+                    prepare_content($row->name)."</a></span>\n";
             }
         }
     }
@@ -1472,7 +1507,8 @@ function search_data_content($search, $cid) {
             $ret[] = prepare_content($row->content, false).' <a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.prepare_content($row->name)."</a>\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text">'.prepare_content($row->content, false).' <a href="'.$CFG->wwwroot.'/mod/data/view.php?id='.$row->cmid.'">'.prepare_content($row->name)."</a></span>\n";
+                $ret[] = '<span class="dimmed_text">'.prepare_content($row->content, false).' <a href="'.$CFG->wwwroot.
+                    '/mod/data/view.php?id='.$row->cmid.'">'.prepare_content($row->name)."</a></span>\n";
             }
         }
     }
@@ -1489,7 +1525,8 @@ function search_data_content($search, $cid) {
 function search_course_names($search, $cid) {
     global $CFG, $DB, $can_edit;
 
-    $res = $DB->get_records_select('course', "id = '$cid' AND (fullname LIKE '%$search%' OR shortname LIKE '%$search%' OR idnumber LIKE '%$search%')", array('id, fullname, shortname, visible'));
+    $res = $DB->get_records_select('course', "id = '$cid' AND (fullname LIKE '%$search%' OR shortname LIKE '%$search%' OR
+        idnumber LIKE '%$search%')", array('id, fullname, shortname, visible'));
 
     $ret = array();
     foreach ($res as $row) {
@@ -1519,7 +1556,7 @@ function search_course_summary($search, $cid) {
     $ret = array();
     foreach ($res as $row) {
         if ($row->visible) {
-                $ret[] = $row->fullname.' '.prepare_content($row->summary)."\n";
+            $ret[] = $row->fullname.' '.prepare_content($row->summary)."\n";
         } else {
             if ($can_edit) {
                 $ret[] = '<span class="dimmed_text">'.$row->fullname.' '.prepare_content($row->summary)."</span>\n";
@@ -1544,10 +1581,12 @@ function search_course_section_names($search, $cid) {
     $ret = array();
     foreach ($res as $row) {
         if ($row->visible) {
-                $ret[] = '<a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section).'">'.get_string('section', 'block_searchthiscourse').($row->section).'</a> '.prepare_content($row->name)."\n";
+            $ret[] = '<a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section).'">'.
+                get_string('section', 'block_searchthiscourse').($row->section).'</a> '.prepare_content($row->name)."\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section).'">'.get_string('section', 'block_searchthiscourse').($row->section).'</a> '.prepare_content($row->name)."</span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/course/view.php?id='.$cid.'#section-'.($row->section).'">'
+                    .get_string('section', 'block_searchthiscourse').($row->section).'</a> '.prepare_content($row->name)."</span>\n";
             }
         }
     }
@@ -1582,7 +1621,7 @@ function search_slideshow_names($search, $cid) {
     $ret = array();
     foreach ($res as $row) {
         if (instance_is_visible('slideshow', $row)) {
-                $ret[] = '<a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->name, false)."</a>\n";
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->name, false)."</a>\n";
         } else {
             if ($can_edit) {
                 $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->name, false)."</a>\n";
@@ -1627,10 +1666,14 @@ function search_slideshow_captions($search, $cid) {
         $instance_data->id      = $row->sid;
 
         if (instance_is_visible('slideshow', $instance_data)) {
-                $ret[] = '<a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->title, false).'</a> '.prepare_content($row->caption).' in <a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->sname, false)."</a>\n";
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->title, false).
+                '</a> '.prepare_content($row->caption).' in <a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.
+                prepare_content($row->sname, false)."</a>\n";
         } else {
             if ($can_edit) {
-                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->title, false).'</a> '.prepare_content($row->caption).' in <a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->sname, false)."</a></span>\n";
+                $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/slideshow/view.php?id='.$row->cmid.'">'.
+                    prepare_content($row->title, false).'</a> '.prepare_content($row->caption).' in <a href="'.$CFG->wwwroot.
+                    '/mod/slideshow/view.php?id='.$row->cmid.'">'.prepare_content($row->sname, false)."</a></span>\n";
             }
         }
     }
