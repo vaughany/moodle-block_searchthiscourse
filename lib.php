@@ -1149,11 +1149,11 @@ function search_choice_options($search, $cid) {
 
         if (instance_is_visible('choice', $instance_data)) {
             $ret[] = '<a href="'.$CFG->wwwroot.'/course/mod.php?sesskey='.$USER->sesskey.'&sr=1&update='.$row->cmid.'"> '.
-                strip_tags($row->text).'</a> '.prepare_content($row->name)."\n";
+                prepare_content($row->text, false).'</a> '.prepare_content($row->name)."\n";
         } else {
             if ($can_edit) {
                 $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/course/mod.php?sesskey='.$USER->sesskey.'
-                    &sr=1&update='.$row->cmid.'"> '.strip_tags($row->text).'</a> '.prepare_content($row->name)."</span>\n";
+                    &sr=1&update='.$row->cmid.'"> '.prepare_content($row->text, false).'</a> '.prepare_content($row->name)."</span>\n";
             }
         }
     }
@@ -1370,11 +1370,11 @@ function search_wiki_versions($search, $cid) {
         $instance_data->id      = $row->wid;
 
         if (instance_is_visible('wiki', $instance_data)) {
-            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/wiki/history.php?pageid='.$row->pid.'"> '.strip_tags($row->content).'</a> '.prepare_content($row->title)."\n";
+            $ret[] = '<a href="'.$CFG->wwwroot.'/mod/wiki/history.php?pageid='.$row->pid.'"> '.prepare_content($row->content, false).'</a> '.prepare_content($row->title)."\n";
         } else {
             if ($can_edit) {
                 $ret[] = '<span class="dimmed_text"><a href="'.$CFG->wwwroot.'/mod/wiki/history.php?pageid='.$row->pid.'"> '.
-                    strip_tags($row->content).'</a> '.prepare_content($row->title)."</span>\n";
+                    prepare_content($row->content, false).'</a> '.prepare_content($row->title)."</span>\n";
             }
         }
     }
