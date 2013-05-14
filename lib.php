@@ -19,8 +19,7 @@
  *
  * Chunks of code used from local/codechecker and mod/forum.
  *
- * @package    blocks
- * @subpackage searchthiscourse
+ * @package    block_searchthiscourse
  * @copyright  2012 Paul Vaughan, paulvaughan@southdevon.ac.uk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -38,8 +37,7 @@ $summary_length = 75;
  *
  * @param string $words     String containing space-separated strings to search for
  * @param int $len          Int defining minimum length of search word
- * @param string $prefix    String to prepend to the each token taken out of $words
- * @returns array
+ * @return array
  */
 function clean_search_terms($words, $len = 2) {
     $searchterms = explode(' ', $words);
@@ -53,8 +51,9 @@ function clean_search_terms($words, $len = 2) {
 
 /**
  * This function shortens content to a more usable length.
- * @param string $content       String to trim
- * @returns string
+ * @param string $content       String to trim.
+ * @param bool $prettify        Defaults to putting nice quotes around the text.
+ * @return string
  */
 function prepare_content($content, $prettify = true) {
     global $summary_length;
@@ -79,12 +78,12 @@ function prepare_content($content, $prettify = true) {
     }
 
     return $content;
-
 }
 
-/*
+/**
  * Regular use function for displaying the results of searches in a nice way.
- * @param object $res       Database result object.
+ *
+ * @param object $results   Database result object.
  * @param string $title     Text snippet of the searched area.
  * @param string $module    Name of the module to produce the same image.
  */
@@ -107,9 +106,11 @@ function display_result($results, $title, $module = null) {
     echo "</$listtype>\n";
 }
 
-/*
+/**
  * Regular use function for displaying the lack of search results.
+ *
  * @param string $title     Text snippet of the searched area.
+ * @param string $module    Name of the module to produce the same image.
  */
 function display_no_result($title, $module = null) {
     global $CFG;
@@ -167,12 +168,12 @@ function check_plugin_visible($name) {
 }
 
 
-/*
+/**
  * Search forum titles for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_forum_titles($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -194,12 +195,12 @@ function search_forum_titles($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search forum discussions for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_forum_discussions($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -232,12 +233,12 @@ function search_forum_discussions($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search forum posts for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_forum_posts($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -268,12 +269,12 @@ function search_forum_posts($search, $cid) {
 
 
 
-/*
+/**
  * Search glossary titles for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_glossary_titles($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -297,12 +298,12 @@ function search_glossary_titles($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search glossary entries for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_glossary_entries($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -348,12 +349,12 @@ function search_glossary_entries($search, $cid) {
 
 
 
-/*
+/**
  * Search labels for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_labels($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -392,12 +393,12 @@ function search_labels($search, $cid) {
 
 
 
-/*
+/**
  * Search checklist titles for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_checklist_titles($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -433,12 +434,12 @@ function search_checklist_titles($search, $cid) {
 }
 
 
-/*
+/**
  * Search url titles for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_url_titles($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -472,12 +473,12 @@ function search_url_titles($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search urls for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_urls($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -513,12 +514,12 @@ function search_urls($search, $cid) {
 }
 
 
-/*
+/**
  * Search page titles for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_page_titles($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -552,12 +553,12 @@ function search_page_titles($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search page content for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_page_content($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -593,12 +594,12 @@ function search_page_content($search, $cid) {
 }
 
 
-/*
+/**
  * Search filenames for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 /*
 function search_filenames($search, $cid) {
@@ -634,12 +635,12 @@ function search_filenames($search, $cid) {
 }*/
 
 
-/*
+/**
  * Search book titles for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_book_titles($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -673,12 +674,12 @@ function search_book_titles($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search book content for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_book_content($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -716,12 +717,12 @@ function search_book_content($search, $cid) {
 }
 
 
-/*
+/**
  * Search assignment titles for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_assignment_titles($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -756,12 +757,12 @@ function search_assignment_titles($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search assignment content for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_assignment_submission($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -806,12 +807,12 @@ function search_assignment_submission($search, $cid) {
 }
 
 
-/*
+/**
  * Search folder names for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_folder_names($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -847,12 +848,12 @@ function search_folder_names($search, $cid) {
 }
 
 
-/*
+/**
  * Search feedback titles for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_feedback_titles($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -887,12 +888,12 @@ function search_feedback_titles($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search feedback questions for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_feedback_questions($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -933,12 +934,12 @@ function search_feedback_questions($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search feedback answers for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_feedback_answers($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -976,12 +977,12 @@ function search_feedback_answers($search, $cid) {
 }
 
 
-/*
+/**
  * Search chat titles for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_chat_titles($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -1015,12 +1016,12 @@ function search_chat_titles($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search chat entries for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_chat_entries($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -1072,12 +1073,12 @@ function search_chat_entries($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search choice titles for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_choice_titles($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -1112,12 +1113,12 @@ function search_choice_titles($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search choice options for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_choice_options($search, $cid) {
     global $CFG, $DB, $can_edit, $USER;
@@ -1161,12 +1162,12 @@ function search_choice_options($search, $cid) {
 }
 
 
-/*
+/**
  * Search lesson titles for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_lesson_titles($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -1200,12 +1201,12 @@ function search_lesson_titles($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search lesson pages for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_lesson_pages($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -1247,12 +1248,12 @@ function search_lesson_pages($search, $cid) {
 }
 
 
-/*
+/**
  * Search wiki titles for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_wiki_titles($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -1287,12 +1288,12 @@ function search_wiki_titles($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search wiki pages for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_wiki_pages($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -1333,12 +1334,12 @@ function search_wiki_pages($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search wiki versions (history) for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_wiki_versions($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -1381,12 +1382,12 @@ function search_wiki_versions($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search data[base] titles for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_data_titles($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -1420,12 +1421,12 @@ function search_data_titles($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search data[base] fields for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_data_fields($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -1468,12 +1469,12 @@ function search_data_fields($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search data[base] content for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_data_content($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -1515,12 +1516,12 @@ function search_data_content($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search course names for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_course_names($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -1541,12 +1542,12 @@ function search_course_names($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search course summary for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_course_summary($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -1566,12 +1567,12 @@ function search_course_summary($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search course section names for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_course_section_names($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -1593,12 +1594,12 @@ function search_course_section_names($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search slideshow names for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_slideshow_names($search, $cid) {
     global $CFG, $DB, $can_edit;
@@ -1631,12 +1632,12 @@ function search_slideshow_names($search, $cid) {
     return $ret;
 }
 
-/*
+/**
  * Search slideshow captions for the keyword
  *
  * @param string $search    Search word or phrase.
  * @param int $cid          Course ID.
- * @returns array
+ * @return array
  */
 function search_slideshow_captions($search, $cid) {
     global $CFG, $DB, $can_edit;

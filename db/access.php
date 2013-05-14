@@ -15,18 +15,37 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * SearchThisCourse block version details.
+ * SearchThisCourse block caps.
  *
  * @package    block_searchthiscourse
  * @copyright  2012 Paul Vaughan, paulvaughan@southdevon.ac.uk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$plugin->version        = 2013051401;                   // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires       = 2010112400;                   // Moodle 2.0: http://docs.moodle.org/dev/Moodle_versions
-// $plugin->requires       = 2011070100;                   // Moodle 2.1.
-// $plugin->requires       = 2011120500;                   // Moodle 2.2.
-$plugin->component      = 'block_searchthiscourse';     // Full name of the plugin (used for diagnostics).
-$plugin->cron           = 0;                            // Period for cron to check this plugin (secs).
-$plugin->maturity       = MATURITY_BETA;
-$plugin->release        = '0.5';
+defined('MOODLE_INTERNAL') || die();
+
+$capabilities = array(
+
+    'block/searchthiscourse:myaddinstance' => array(
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'user' => CAP_ALLOW
+        ),
+
+        'clonepermissionsfrom' => 'moodle/my:manageblocks'
+    ),
+
+    'block/searchthiscourse:addinstance' => array(
+        'riskbitmask' => RISK_SPAM | RISK_XSS,
+
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_BLOCK,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+
+        'clonepermissionsfrom' => 'moodle/site:manageblocks'
+    ),
+);

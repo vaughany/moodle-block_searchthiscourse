@@ -20,18 +20,29 @@
  * SearchThisCourse searches through all of a course's resources for
  * specific keywords.
  *
- * @package    block
- * @subpackage searchthiscourse
+ * @package    block_searchthiscourse
  * @copyright  2012 Paul Vaughan, paulvaughan@southdevon.ac.uk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/**
+ * Class for the Search This Course block.
+ *
+ * @copyright  2012 Paul Vaughan, paulvaughan@southdevon.ac.uk
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class block_searchthiscourse extends block_base {
 
+    /**
+     * Initialisation things.
+     */
     public function init() {
         $this->title = get_string('pluginname', 'block_searchthiscourse');
     }
 
+    /**
+     * The function which does pretty much everything relating to content.
+     */
     public function get_content() {
 
         global $CFG, $OUTPUT;
@@ -67,6 +78,9 @@ class block_searchthiscourse extends block_base {
         return $this->content;
     }
 
+    /**
+     * Where can this block go?
+     */
     public function applicable_formats() {
         return array(
             'site' => true,
