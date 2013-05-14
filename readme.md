@@ -148,7 +148,7 @@ Copy the 'searchthiscourse' folder into your Moodle installation's **blocks** fo
 
 Log in to your Moodle as Admin and click on Notifications on the Admin menu.
 
-The block should successfully install. If you receive any error messages at this point, please [raise an issue on GitHub](https://github.com/vaughany/moodle-block_searchthiscourse/issues) giving as much detail as possible.
+The block should successfully install. If you receive any error messages at this point, please [raise an issue on GitHub](https://github.com/vaughany/moodle-block_searchthiscourse/issues) giving as much detail as possible ([this may help](http://www.chiark.greenend.org.uk/~sgtatham/bugs.html)).
 
 Add the block to a page. The block is able to be placed anywhere within Moodle, and is visible to all users.
 
@@ -164,7 +164,7 @@ This block has none at this time.
 
 This block has none at this time, aside the third-party plugins not yet added to the search.
 
-Should you find a bug, have an issue, feature request or new language pack, please [log an issue in the tracker](https://github.com/vaughany/moodle-block_searchthiscourse/issues) or fork the repo, fix the problem and submit a pull request.
+Should you find a bug, have an issue, feature request or new language pack, please [raise an issue on GitHub](https://github.com/vaughany/moodle-block_searchthiscourse/issues) (again, [this may help](http://www.chiark.greenend.org.uk/~sgtatham/bugs.html)) or fork the repo, fix the problem and submit a pull request.
 
 ## To do
 
