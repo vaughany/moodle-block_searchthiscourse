@@ -21,14 +21,14 @@
  * specific keywords.
  *
  * @package    block_searchthiscourse
- * @copyright  2012 Paul Vaughan, paulvaughan@southdevon.ac.uk
+ * @copyright  2013 Paul Vaughan, paulvaughan@southdevon.ac.uk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
  * Class for the Search This Course block.
  *
- * @copyright  2012 Paul Vaughan, paulvaughan@southdevon.ac.uk
+ * @copyright  2013 Paul Vaughan, paulvaughan@southdevon.ac.uk
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_searchthiscourse extends block_base {

@@ -8,7 +8,7 @@ We have global searches, course searches, forum searches and a host of other sea
 
 ## Licence
 
-SearchThisCourse block for Moodle 2, copyright &copy; 2012, Paul Vaughan.
+SearchThisCourse block for Moodle 2, copyright &copy; 2013, Paul Vaughan.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
