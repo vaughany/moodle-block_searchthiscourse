@@ -29,7 +29,7 @@ Currently it will search the current course in the following places:
 * Assignment
     * titles
     * submissions (*teachers only*)
-* Book (core plugin in Moodle 2.3, but a third-party plugin for 2.0, 2.1 and 2.2)
+* Book (core plugin in Moodle 2.3 onwards, but a third-party plugin for 2.0, 2.1 and 2.2)
 * Chat
     * titles
     * messages (*teachers only*)
@@ -135,10 +135,15 @@ Download the archive and extract the files, or [clone the repository from GitHub
 
     searchthiscourse/
     |-- block_searchthiscourse.php
+    |-- db
+    |   `-- access.php
     |-- gpl.txt
     |-- lang
     |   `-- en
     |       `-- block_searchthiscourse.php
+    |-- lib.php
+    |-- pix
+    |   `-- icon.png
     |-- readme.md
     |-- search.php
     |-- styles.css
